@@ -41,22 +41,25 @@ def load_model():
     model = Model(inputs=inception_v3_model.input, outputs=predictions)
     model.load_weights(os.path.join(model_folder_name, model_name))
 
-def prepare_image(image, dimensions):
+def prepare_image(input_image, dimensions):
     # basic pre-processing of the images
-    img = image.resize(dimensions)
-    x = image.img_to_array(img)
+    resized_input_image = input_image.resize(dimensions)
+    x = image.img_to_array(resized_input_image)
 
     # since only single image so expand dims
     x = np.expand_dims(x, axis=0)
     x = preprocess_input(x)
 
     # return the processed image
-    return image
+    return x
 
 def decode_predictions(predictions):
     # outputs a batch of predictions
-    predicted_class_id = [np.argmax(x) for x in predictions][0]
-    predicted_class_probability = predictions[predicted_class_id]
+    print("Predictions...")
+    print(predictions)
+    required_prediction = predictions[0]
+    predicted_class_id = np.argmax(required_prediction)
+    predicted_class_probability = required_prediction[predicted_class_id]
     return class_names[predicted_class_id], predicted_class_probability
 
 @app.route("/predict", methods=["POST"])
@@ -80,7 +83,7 @@ def predict():
             preds = model.predict(image)
             results = decode_predictions(preds)
             data["type"] = results[0]
-            data["probability"] = results[1]
+            data["probability"] = str(round(results[1], 5) * 100) 
 
 
             # indicate that the request was a success
