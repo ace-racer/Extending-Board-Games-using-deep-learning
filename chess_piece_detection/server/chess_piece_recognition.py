@@ -27,7 +27,7 @@ def load_model():
     # substitute in your own networks just as easily)
     global model
     # create the base pre-trained model
-    inception_v3_model = InceptionV3()
+    inception_v3_model = InceptionV3(include_top=False)
 
     # add a global spatial average pooling layer
     x = inception_v3_model.output
@@ -43,7 +43,7 @@ def load_model():
 
 def prepare_image(image, dimensions):
     # basic pre-processing of the images
-    img = image.load_img(img_path, target_size=dimensions)
+    img = image.resize(dimensions)
     x = image.img_to_array(img)
 
     # since only single image so expand dims
