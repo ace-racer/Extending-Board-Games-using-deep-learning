@@ -8,6 +8,7 @@ from PIL import Image
 import numpy as np
 import flask
 import io
+import os
 
 # initialize our Flask application and the Keras model
 app = flask.Flask(__name__)
@@ -18,7 +19,6 @@ model_name = "chess_pieces_inceptionv3_p2.hdf5"
 
 class_names = ["bishop", "king", "knight", "pawn", "queen", "rook", "empty"]
 class_names_reverse_mappings = {"bishop": 0, "king": 1, "knight":2, "pawn":3, "queen":4, "rook":5, "empty":6}
-class_names_folder_mappings = {"bishop": ["bb", "wb"], "king": ["bk", "wk"], "knight":["bn", "wn"], "pawn":["bp", "wp"], "queen":["bq", "wq"], "rook":["br", "wr"], "empty":["empty"]}
 num_output_classes = len(class_names)
 
 def load_model():
@@ -50,6 +50,12 @@ def prepare_image(image, dimensions):
     # return the processed image
     return image
 
+def decode_predictions(predictions):
+    # outputs a batch of predictions
+    predicted_class_id = [np.argmax(x) for x in predictions][0]
+    predicted_class_probability = predictions[predicted_class_id]
+    return class_names[predicted_class_id], predicted_class_probability
+
 @app.route("/predict", methods=["POST"])
 def predict():
     # initialize the data dictionary that will be returned from the
@@ -69,14 +75,10 @@ def predict():
             # classify the input image and then initialize the list
             # of predictions to return to the client
             preds = model.predict(image)
-            results = imagenet_utils.decode_predictions(preds)
-            data["predictions"] = []
+            results = decode_predictions(preds)
+            data["type"] = results[0]
+            data["probability"] = results[1]
 
-            # loop over the results and add them to the list of
-            # returned predictions
-            for (imagenetID, label, prob) in results[0]:
-                r = {"label": label, "probability": float(prob)}
-                data["predictions"].append(r)
 
             # indicate that the request was a success
             data["success"] = True
