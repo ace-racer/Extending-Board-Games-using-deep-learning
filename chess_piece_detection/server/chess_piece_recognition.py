@@ -45,6 +45,9 @@ def prepare_image(image, dimensions):
     # basic pre-processing of the images
     img = image.load_img(img_path, target_size=dimensions)
     x = image.img_to_array(img)
+
+    # since only single image so expand dims
+    x = np.expand_dims(x, axis=0)
     x = preprocess_input(x)
 
     # return the processed image
