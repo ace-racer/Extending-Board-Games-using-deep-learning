@@ -14,7 +14,7 @@ import os
 app = flask.Flask(__name__)
 model = None
 
-model_folder_name = "../../models/09_12"
+model_folder_name = "D:\\Anurag_AR\\Models\\80_validation"
 model_name = "chess_pieces_inceptionv3_p2.hdf5"
 
 class_names = ["bishop", "king", "knight", "pawn", "queen", "rook", "empty"]
