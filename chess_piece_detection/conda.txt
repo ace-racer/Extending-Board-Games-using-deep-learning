@@ -1,0 +1,10 @@
+
+conda create --name tf
+
+1. conda install -c anaconda pillow 
+2. conda install -c anaconda ipykernel 
+3. conda install -c conda-forge keras 
+4. python -m ipykernel install --user --name tf --display-name "tf"
+5. conda install -c conda-forge matplotlib 
+6. conda install -c conda-forge tensorflow 
+7. 
