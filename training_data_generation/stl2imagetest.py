@@ -1,6 +1,7 @@
 from stl import mesh
 from mpl_toolkits import mplot3d
 from matplotlib import pyplot
+from matplotlib.ticker import NullLocator
 import math
 import cv2
 import os
@@ -21,15 +22,15 @@ scale = image_mesh.points.flatten(-1)
 axes.auto_scale_xyz(scale, scale, scale)
 axes.set_axis_off()
 
-num_images_required = 6
+num_images_required = 10
 
 # 1 unit rotation
 unit_rotation = 360/num_images_required
 
 for itr in range(num_images_required):
     rotation_angle = unit_rotation * itr
-    axes.view_init(azim=rotation_angle)
+    axes.view_init(azim=rotation_angle, elev=10)
     file_location = os.path.join(GENERATED_FILES_BASE_LOC, "img" + str(itr) + ".jpg")
-    pyplot.savefig(file_location)
-    print("Generated image...")
+    pyplot.savefig(file_location, bbox_inches = 'tight', pad_inches = 0)
+    print("Generated image...{0}/{1}".format(itr+1, num_images_required))
     # pyplot.show()
