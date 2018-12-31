@@ -20,6 +20,7 @@ MAX_ELEVATION_ANGLE = 75
 total_images = NUM_IMAGES_FOR_ELEVATION_ANGLE * NUM_ELEVATION_ANGLES
 
 for stl_file_name in stl_file_names:
+    print("Generating images for {0}.".format(stl_file_name))
     complete_stl_file_location = os.path.join(STL_FILES_LOCATION, stl_file_name + ".stl")
     # Create a new plot
     figure = pyplot.figure(frameon=False)
