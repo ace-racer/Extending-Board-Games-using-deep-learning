@@ -28,12 +28,17 @@ num_images_required = 3
 # 1 unit rotation in radians
 unit_rotation_radian = (2*math.pi) / num_images_required
 
+# check 90 degree rotation
+# image_mesh.rotate([0, 0, 1], math.pi/2)
+pyplot.show()
+# file_location = os.path.join(GENERATED_FILES_BASE_LOC, "img" + str(itr) + ".jpg")
+#pyplot.savefig(file_location)
+#print("Generated image...")
 
-
-for itr in range(1, num_images_required + 1):
+""" for itr in range(1, num_images_required + 1):
     rotation_angle_radian = unit_rotation_radian * itr
     image_mesh.rotate([0, 0, 1], rotation_angle_radian)
     file_location = os.path.join(GENERATED_FILES_BASE_LOC, "img" + str(itr) + ".jpg")
     pyplot.savefig(file_location)
     print("Generated image...")
-    # pyplot.show()
+    # pyplot.show() """
