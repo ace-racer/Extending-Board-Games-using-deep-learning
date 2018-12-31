@@ -26,7 +26,7 @@ class_names_folder_mappings = {"white_bishop": ["wb"], "white_king": ["wk"], "wh
     "wr"], "black_bishop": ["bb"], "black_king": ["bk"], "black_knight": ["bn"], "black_pawn": ["bp"], "black_queen": ["bq"], "black_rook": ["br"], "empty": ["empty"]}
 
 
-def get_required_data_with_labels_for_model(base_location, num_samples=None, dimensions=(300, 300)):
+def get_required_data_with_labels_for_model(base_location, num_samples=None, dimensions=(200, 200)):
     X, y = [], []
     for class_name in class_names_folder_mappings:
         for folder_name in class_names_folder_mappings[class_name]:
@@ -73,7 +73,7 @@ print(len(y_test))
 print(X_test[0].shape)
 print(y_test[0])
 
-batch_size = 64
+batch_size = 32
 # number of convolutional filters to use
 nb_filters = 32
 # size of pooling area for max pooling
@@ -85,7 +85,7 @@ nb_epoch = 150
 nb_conv = 3
 
 # shape of each image
-shape_ord = (300, 300, 3)
+shape_ord = (200, 200, 3)
 
 # number of output classes
 nb_classes = 13
