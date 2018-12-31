@@ -17,7 +17,7 @@ MIN_ELEVATION_ANGLE = 10
 MAX_ELEVATION_ANGLE = 75
 
 # calculated values
-total_images = NUM_IMAGES_FOR_ELEVATION_ANGLE * NUM_ELEVATION_ANGLES
+total_images = NUM_IMAGES_FOR_ELEVATION_ANGLE * (NUM_ELEVATION_ANGLES + 1)
 
 for stl_file_name in stl_file_names:
     print("Generating images for {0}.".format(stl_file_name))
