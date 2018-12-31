@@ -6,8 +6,8 @@ import math
 import cv2
 import os
 
-NUM_IMAGES_FOR_ELEVATION_ANGLE = 360 * 4
-NUM_ELEVATION_ANGLES = 50
+NUM_IMAGES_FOR_ELEVATION_ANGLE = 4 # 360 * 4
+NUM_ELEVATION_ANGLES = 5 # 50
 STL_FILES_LOCATION = "H:\\AR-ExtendingOnlineGames\\3d_pieces\\Chess_Set_-_Print_Friendly\\files"
 GENERATED_FILES_BASE_LOC = "H:\\AR-ExtendingOnlineGames\\3d_pieces\\images"
 
@@ -39,6 +39,10 @@ for stl_file_name in stl_file_names:
     current_elevation_angle = MIN_ELEVATION_ANGLE
     elevation_loop_counter = 0
 
+    current_piece_images_location = os.path.join(GENERATED_FILES_BASE_LOC, stl_file_name)
+    if not os.path.exists(current_piece_images_location):
+        os.makedirs(current_piece_images_location)
+
     while current_elevation_angle <= MAX_ELEVATION_ANGLE:
         unit_rotation_for_elevation = 360 / NUM_IMAGES_FOR_ELEVATION_ANGLE
 
@@ -46,7 +50,7 @@ for stl_file_name in stl_file_names:
             rotation_angle = unit_rotation_for_elevation * itr
             axes.view_init(azim=rotation_angle, elev=current_elevation_angle)
             image_name = "e{0}_a{1}".format(round(current_elevation_angle, 2), round(rotation_angle, 2))
-            file_location = os.path.join(GENERATED_FILES_BASE_LOC, image_name + ".jpg")
+            file_location = os.path.join(current_piece_images_location, image_name + ".jpg")
             pyplot.savefig(file_location, bbox_inches = 'tight', pad_inches = 0)
 
             image_number = elevation_loop_counter * NUM_IMAGES_FOR_ELEVATION_ANGLE + itr
