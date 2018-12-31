@@ -14,7 +14,7 @@ GENERATED_FILES_BASE_LOC = "H:\\AR-ExtendingOnlineGames\\3d_pieces\\images"
 # constants
 stl_file_names = ["Bishop", "King", "Knight", "Pawn", "Queen", "Rook"]
 MIN_ELEVATION_ANGLE = 10
-MAX_ELEVATION_ANGLE = 75
+MAX_ELEVATION_ANGLE = 40
 
 # calculated values
 total_images = NUM_IMAGES_FOR_ELEVATION_ANGLE * (NUM_ELEVATION_ANGLES + 1)
