@@ -123,13 +123,14 @@ history = model.fit(X_train,
           batch_size=batch_size)
 
 # summarize history for accuracy
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
-plt.title('model accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
+if True:
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
 
 ## Fine tune some inception layers
 # we chose to train the top 2 inception blocks, i.e. we will freeze
@@ -162,13 +163,14 @@ history_2 = model.fit(X_train,
           batch_size=batch_size)
 
 # summarize history for accuracy
-plt.plot(history_2.history['acc'])
-plt.plot(history_2.history['val_acc'])
-plt.title('model accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
+if True:
+    plt.plot(history_2.history['acc'])
+    plt.plot(history_2.history['val_acc'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
 
 ## Helper method to print a confusion matrix
 import itertools
