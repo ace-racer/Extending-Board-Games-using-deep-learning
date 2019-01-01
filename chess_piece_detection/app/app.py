@@ -48,6 +48,6 @@ if __name__ == "__main__":
         
         utils.get_score_confusion_matrix(X_test, y_test, model, configs_to_use, False)
     else:
-        _, model, X_test, y_test = model_trainer(configs_to_use, False, 20)
+        _, model, X_test, y_test = model_trainer(configs_to_use, False)
         utils.get_score_confusion_matrix(X_test, y_test, model, configs_to_use)
     
