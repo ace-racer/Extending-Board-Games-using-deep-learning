@@ -133,7 +133,7 @@ def create_artifact_folders():
 def get_score_confusion_matrix(X_test, y_test, model, model_config, load_weights = True):
     if load_weights:
         model_weights_file_names = model_config["model_weights_file_name"]
-        required_model_weight_file_name = model_weights_file_names[0]
+        required_model_weight_file_name = model_weights_file_names[model_config["model_weights_file_to_use"]]
         model.load_weights(os.path.join(appconfigs.model_folder_location, required_model_weight_file_name))
 
     score = model.evaluate(X_test, y_test, verbose=0)
