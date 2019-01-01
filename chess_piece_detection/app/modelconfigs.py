@@ -1,0 +1,1 @@
+inceptionV3configs = { "epochs": [100, 100], "batch_size": [100, 100]   }

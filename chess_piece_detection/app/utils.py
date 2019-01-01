@@ -9,6 +9,7 @@ from keras.applications.inception_v3 import preprocess_input
 
 # custom imports
 import constants
+import appconfigs
 
 
 def get_required_data_with_labels_for_model(base_location, num_samples=None, dimensions=(299, 299)):
@@ -84,3 +85,10 @@ def plot_train_validation_accuracy(historyobj):
     plt.xlabel('epoch')
     plt.legend(['train', 'test'], loc='upper left')
     plt.show()
+
+def create_artifact_folders():
+    if not os.path.exists(appconfigs.model_folder_location):
+        os.makedirs(appconfigs.model_folder_location)
+
+    if not os.path.exists(appconfigs.tensorboard_logs_folder_location):
+        os.makedirs(appconfigs.tensorboard_logs_folder_location)  
