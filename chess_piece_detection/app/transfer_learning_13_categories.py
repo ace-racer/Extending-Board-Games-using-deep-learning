@@ -33,12 +33,6 @@ import os
 
 model.load_weights(os.path.join(model_folder_name, "chess_pieces_inceptionv3_p2.hdf5"))
 
-# Compile model
-model.compile(
-    loss='sparse_categorical_crossentropy',
-    optimizer=SGD(lr=0.0001, momentum=0.9),
-    metrics=['accuracy'],
-)
 score = model.evaluate(X_test, y_test, verbose=0)
 
 print("Score: " + str(score))
