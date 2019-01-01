@@ -1,1 +1,1 @@
-inceptionV3configs = { "epochs": [100, 100], "batch_size": [100, 100]   }
+inceptionV3configs = { "epochs": [100, 100], "batch_size": [100, 100], "lr": [0.00001, 0.0001]   }
