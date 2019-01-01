@@ -16,6 +16,9 @@ import modelconfigs
 
 set_random_seed(42)
 
+"""
+    Usage: python app.py 0 "inception"
+"""
 if __name__ == "__main__":
     # create the required folders
     utils.create_artifact_folders()
