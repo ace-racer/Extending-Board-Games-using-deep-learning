@@ -37,8 +37,9 @@ if __name__ == "__main__":
     else:
         raise ValueError("Model name not mentioned correctly")
     
-    # if the first argument is True ish
-    if sys.argv[1]:
+    # if the first argument is True
+    if sys.argv[1] == 1:
+        print("Training model...")
         history, model, X_test, y_test = model_trainer(configs_to_use, True)
         
         # if the history needs to be plotted
