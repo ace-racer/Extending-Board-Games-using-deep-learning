@@ -3,6 +3,8 @@ import os
 import numpy as np
 import itertools
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
 
 # Keras/TF imports
 from keras.preprocessing import image
@@ -93,3 +95,18 @@ def create_artifact_folders():
 
     if not os.path.exists(appconfigs.tensorboard_logs_folder_location):
         os.makedirs(appconfigs.tensorboard_logs_folder_location)  
+
+def get_score_confusion_matrix(X_test, y_test, model, model_config, load_weights = True):
+    if load_weights:
+        model_weights_file_names = model_config["model_weights_file_name"]
+        required_model_weight_file_name = model_weights_file_names[0]
+        model.load_weights(os.path.join(appconfigs.model_folder_location, required_model_weight_file_name))
+
+    score = model.evaluate(X_test, y_test, verbose=0)
+    print("Score: " + str(score))
+
+    # plt.rcParams["figure.figsize"] = (10,10)
+    test_predictions = model.predict(X_test, batch_size=model_config["batch_size"][0])
+    y_test_pred = [np.argmax(x) for x in test_predictions]
+    cnf_matrix = confusion_matrix(y_test, y_test_pred)
+    plot_confusion_matrix(cnf_matrix, classes=constants.class_names, normalize=True,title='Normalized confusion matrix')

@@ -1,9 +1,8 @@
 # Scikit-learn and Numpy imports
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import sys
 
 # TF/Keras imports
 from tensorflow import set_random_seed
@@ -34,4 +33,17 @@ if __name__ == "__main__":
     print(y_test[0])
 
     inceptionV3configs = modelconfigs.inceptionV3configs
-    history, model = models.train_InceptionV3_transfer_learning_model(X_train, y_train, X_test, y_test, inceptionV3configs)
+    
+    # if the first argument is True ish
+    if sys.argv[1]:
+        history, model = models.train_InceptionV3_transfer_learning_model(X_train, y_train, X_test, y_test, inceptionV3configs)
+        
+        # if the history needs to be plotted
+        if appconfigs.plot_history:
+            utils.plot_train_validation_accuracy(history)
+        
+        utils.get_score_confusion_matrix(X_test, y_test, model, inceptionV3configs, False)
+    else:
+        _, model = models.train_InceptionV3_transfer_learning_model(X_train, y_train, X_test, y_test, inceptionV3configs, False)
+        utils.get_score_confusion_matrix(X_test, y_test, model, inceptionV3configs)
+    
