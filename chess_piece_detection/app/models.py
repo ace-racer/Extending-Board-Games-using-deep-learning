@@ -18,17 +18,17 @@ import modelconfigs
 import constants
 import utils
 
-def train_InceptionV3_transfer_learning_model(model_configs, train_model = True):
+def train_InceptionV3_transfer_learning_model(model_configs, train_model = True, num_samples = None):
     
     print("InceptionV3 model...")
     
-    X_train, y_train = utils.get_required_data_with_labels_for_InceptionV3(appconfigs.location_of_train_data)
+    X_train, y_train = utils.get_required_data_with_labels_for_InceptionV3(appconfigs.location_of_train_data, num_samples)
     print(len(X_train))
     print(len(y_train))
     print(X_train[0].shape)
     print(y_train[0])
 
-    X_test, y_test = utils.get_required_data_with_labels_for_InceptionV3(appconfigs.location_of_test_data)
+    X_test, y_test = utils.get_required_data_with_labels_for_InceptionV3(appconfigs.location_of_test_data, num_samples)
     print(len(X_test))
     print(len(y_test))
     print(X_test[0].shape)
@@ -121,15 +121,15 @@ def train_InceptionV3_transfer_learning_model(model_configs, train_model = True)
         model.compile(loss='sparse_categorical_crossentropy', optimizer=SGD(lr=lrs[1], momentum=0.9), metrics=['accuracy'])
         return None, model, X_test, y_test
 
-def train_custom_cnn_model(model_configs, train_model = True):
-    X_train, y_train = utils.get_required_data_with_labels_for_CNN(appconfigs.location_of_train_data)
+def train_custom_cnn_model(model_configs, train_model = True, num_samples = None):
+    X_train, y_train = utils.get_required_data_with_labels_for_CNN(appconfigs.location_of_train_data, num_samples)
     print(len(X_train))
     print(len(y_train))
     print(X_train.shape)
     print(X_train[0].shape)
     print(y_train[0])
 
-    X_test, y_test = utils.get_required_data_with_labels_for_CNN(appconfigs.location_of_test_data)
+    X_test, y_test = utils.get_required_data_with_labels_for_CNN(appconfigs.location_of_test_data, num_samples)
     print(len(X_test))
     print(len(y_test))
     print(X_test[0].shape)

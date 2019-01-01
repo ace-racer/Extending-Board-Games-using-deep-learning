@@ -28,18 +28,7 @@ class_names_folder_mappings = {"white_bishop": ["wb"], "white_king": ["wk"], "wh
 
 
 
-X_train, y_train = get_required_data_with_labels_for_model(location_of_train_data)
-print(len(X_train))
-print(len(y_train))
-print(X_train.shape)
-print(X_train[0].shape)
-print(y_train[0])
 
-X_test, y_test = get_required_data_with_labels_for_model(location_of_test_data)
-print(len(X_test))
-print(len(y_test))
-print(X_test[0].shape)
-print(y_test[0])
 
 batch_size = 32
 # number of convolutional filters to use

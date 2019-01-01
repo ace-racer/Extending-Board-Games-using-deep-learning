@@ -5,7 +5,7 @@ import itertools
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
-import opencv as cv2
+import cv2
 
 # Keras/TF imports
 from keras.preprocessing import image
