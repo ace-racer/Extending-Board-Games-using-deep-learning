@@ -34,6 +34,9 @@ def train_InceptionV3_transfer_learning_model(model_configs, train_model = True,
     print(X_test[0].shape)
     print(y_test[0])
 
+    X_train = np.array(X_train)
+    X_test = np.array(X_test)
+
     epochs = model_configs["epochs"][0]
     batch_size = model_configs["batch_size"][0]
     lrs = model_configs["lr"]
@@ -72,9 +75,6 @@ def train_InceptionV3_transfer_learning_model(model_configs, train_model = True,
         early_stopping = EarlyStopping(monitor='val_acc', patience=25, min_delta= 0.0001)
         tensorboard = TensorBoard(log_dir=appconfigs.tensorboard_logs_folder_location, histogram_freq=0, write_graph=True, write_images=True)
         callbacks_list = [checkpoint, early_stopping, tensorboard]
-
-        X_train = np.array(X_train)
-        X_test = np.array(X_test)
         
         # TODO: replace with fit generator
         _ = model.fit(X_train,
