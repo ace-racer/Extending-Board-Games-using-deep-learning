@@ -47,9 +47,11 @@ def train_InceptionV3_transfer_learning_model(model_configs, train_model = True,
     # add a global spatial average pooling layer
     x = inception_v3_model.output
     x = GlobalAveragePooling2D()(x)
-
+    
+    x = Dropout(0.25)(x) 
     # Add a fully-connected layer
     x = Dense(1024, activation='relu')(x)
+    x = Dropout(0.5)(x)
 
     predictions = Dense(constants.num_output_classes, activation='softmax')(x)
 
