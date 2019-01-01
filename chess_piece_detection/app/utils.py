@@ -5,6 +5,7 @@ import itertools
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
+import opencv as cv2
 
 # Keras/TF imports
 from keras.preprocessing import image
@@ -15,7 +16,7 @@ import constants
 import appconfigs
 
 
-def get_required_data_with_labels_for_model(base_location, num_samples=None, dimensions=(299, 299)):
+def get_required_data_with_labels_for_InceptionV3(base_location, num_samples=None, dimensions=(299, 299)):
     X, y = [], []
     for class_name in constants.class_names_folder_mappings:
         for folder_name in constants.class_names_folder_mappings[class_name]:
@@ -44,6 +45,39 @@ def get_required_data_with_labels_for_model(base_location, num_samples=None, dim
 
     return X, y
 
+def get_required_data_with_labels_for_CNN(base_location, num_samples=None, dimensions=(200, 200)):
+    X, y = [], []
+    for class_name in constants.class_names_folder_mappings:
+        for folder_name in constants.class_names_folder_mappings[class_name]:
+            complete_path = os.path.join(base_location, folder_name)
+            print("Reading the files from the location {0}".format(
+                complete_path))
+            current_samples = 0
+            for image_file_name in os.listdir(complete_path):
+
+                # check if the current file is an image file with jpg extension
+                if image_file_name.endswith(".jpg"):
+                    current_samples += 1
+                    img_path = os.path.join(complete_path, image_file_name)
+
+                    img = cv2.imread(img_path)
+                    resized_img = cv2.resize(
+                        img, dimensions, interpolation=cv2.INTER_AREA)
+
+                    x = resized_img
+                    X.append(x)
+                    class_name_id = constants.class_names_reverse_mappings[class_name]
+                    y.append(class_name_id)
+
+                    if ((num_samples is not None) and (current_samples == num_samples)):
+                        break
+
+    if len(X) > 0:
+        X = np.array(X)
+        X = X.astype('float32')
+        X /= 255
+
+    return X, y
 
 def plot_confusion_matrix(cm, classes,
                           normalize=False,

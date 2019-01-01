@@ -1,1 +1,2 @@
-inceptionV3configs = { "epochs": [100, 100], "batch_size": [100, 100], "lr": [0.00001, 0.0001], "model_weights_file_name": ["chess_pieces_inceptionv3_p2.hdf5"]   }
+inceptionV3configs = { "epochs": [100, 100], "batch_size": [100, 100], "lr": [0.00001, 0.0001], "model_weights_file_name": ["chess_pieces_inceptionv3_p1.hdf5", "chess_pieces_inceptionv3_p2.hdf5"]   }
+customCNNconfigs = { "epochs": [150], "batch_size": [32], "lr": [0.0001], "model_weights_file_name": ["custom_cnn.hdf5"]   }

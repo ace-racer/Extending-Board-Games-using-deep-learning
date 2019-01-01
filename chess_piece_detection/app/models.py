@@ -6,7 +6,7 @@ from keras.layers import Dense, GlobalAveragePooling2D, Activation, Dropout, Fla
 from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 from keras import backend as K
 from keras.applications.inception_v3 import preprocess_input
-from keras.optimizers import SGD, RMSprop
+from keras.optimizers import SGD, RMSprop, Adam
 
 # Other imports
 import numpy as np
@@ -16,10 +16,24 @@ import os
 import appconfigs
 import modelconfigs
 import constants
+import utils
 
-def train_InceptionV3_transfer_learning_model(X_train, y_train, X_test, y_test, model_configs, train_model = True):
+def train_InceptionV3_transfer_learning_model(model_configs, train_model = True):
     
     print("InceptionV3 model...")
+    
+    X_train, y_train = utils.get_required_data_with_labels_for_InceptionV3(appconfigs.location_of_train_data)
+    print(len(X_train))
+    print(len(y_train))
+    print(X_train[0].shape)
+    print(y_train[0])
+
+    X_test, y_test = utils.get_required_data_with_labels_for_InceptionV3(appconfigs.location_of_test_data)
+    print(len(X_test))
+    print(len(y_test))
+    print(X_test[0].shape)
+    print(y_test[0])
+
     epochs = model_configs["epochs"][0]
     batch_size = model_configs["batch_size"][0]
     lrs = model_configs["lr"]
@@ -53,7 +67,7 @@ def train_InceptionV3_transfer_learning_model(X_train, y_train, X_test, y_test, 
         print(model.summary())
 
         # set the list of call backs
-        filepath=os.path.join(appconfigs.model_folder_location, "chess_pieces_inceptionv3_p1.hdf5")
+        filepath=os.path.join(appconfigs.model_folder_location, model_configs["model_weights_file_name"][0])
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
         early_stopping = EarlyStopping(monitor='val_acc', patience=25, min_delta= 0.0001)
         tensorboard = TensorBoard(log_dir=appconfigs.tensorboard_logs_folder_location, histogram_freq=0, write_graph=True, write_images=True)
@@ -84,7 +98,7 @@ def train_InceptionV3_transfer_learning_model(X_train, y_train, X_test, y_test, 
         model.compile(optimizer=SGD(lr=lrs[1], momentum=0.9), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
         # checkpoint
-        filepath=os.path.join(appconfigs.model_folder_location, "chess_pieces_inceptionv3_p2.hdf5")
+        filepath=os.path.join(appconfigs.model_folder_location, model_configs["model_weights_file_name"][1])
         checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
         early_stopping = EarlyStopping(monitor='val_acc', patience=25, min_delta= 0.001)
         callbacks_list = [checkpoint, early_stopping, tensorboard]
@@ -101,13 +115,39 @@ def train_InceptionV3_transfer_learning_model(X_train, y_train, X_test, y_test, 
                 callbacks=callbacks_list,
                 batch_size=batch_size)
 
-        return history, model
+        return history, model, X_test, y_test
     else:
         # Compile model
         model.compile(loss='sparse_categorical_crossentropy', optimizer=SGD(lr=lrs[1], momentum=0.9), metrics=['accuracy'])
-        return None, model
+        return None, model, X_test, y_test
 
-def train_custom_cnn_model(X_train, y_train, X_test, y_test, model_configs, train_model = True):
+def train_custom_cnn_model(model_configs, train_model = True):
+    X_train, y_train = utils.get_required_data_with_labels_for_CNN(appconfigs.location_of_train_data)
+    print(len(X_train))
+    print(len(y_train))
+    print(X_train.shape)
+    print(X_train[0].shape)
+    print(y_train[0])
+
+    X_test, y_test = utils.get_required_data_with_labels_for_CNN(appconfigs.location_of_test_data)
+    print(len(X_test))
+    print(len(y_test))
+    print(X_test[0].shape)
+    print(y_test[0])
+
+    batch_size = model_configs["batch_size"][0]
+    # number of convolutional filters to use
+    nb_filters = 32
+    # size of pooling area for max pooling
+    nb_pool = 2
+    # number of training epochs
+    nb_epoch = model_configs["epochs"][0]
+
+    # convolution kernel size
+    nb_conv = 3
+
+    # shape of each image
+    shape_ord = (200, 200, 3)
     model = Sequential()
     model.add(Conv2D(nb_filters, (nb_conv, nb_conv),
                      padding='valid',
@@ -133,37 +173,36 @@ def train_custom_cnn_model(X_train, y_train, X_test, y_test, model_configs, trai
     model.add(Activation('relu'))
     model.add(Dropout(0.5))
     
-    model.add(Dense(nb_classes))
+    model.add(Dense(constants.num_output_classes))
     model.add(Activation('softmax'))
-    model.summary()
-
-    # checkpoint
-    if not os.path.exists(model_folder_name):
-        os.makedirs(model_folder_name)
+    print(model.summary())
     
-    filepath = os.path.join(model_folder_name, "custom_cnn.hdf5")
-    checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1,
-                                 save_best_only=True,
-                                 mode='max')
+    if train_model:
+        filepath = os.path.join(appconfigs.model_folder_location, model_configs["model_weights_file_name"][0])
+        checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1,
+                                    save_best_only=True,
+                                    mode='max')
 
-    earlystop = EarlyStopping(monitor='val_acc', min_delta=0.001, patience=10,
-                              verbose=1, mode='max')
-    
-    tensorboard = TensorBoard(log_dir=tensorboard_logs_folder_location, histogram_freq=0, write_graph=True, write_images=True)
-    
-    callbacks_list = [checkpoint, earlystop, tensorboard]
-    
-    adam = optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
-    model.compile(loss='sparse_categorical_crossentropy',
-                  optimizer=adam,
-                  metrics=['accuracy'])
+        earlystop = EarlyStopping(monitor='val_acc', min_delta=0.001, patience=10,
+                                verbose=1, mode='max')
+        
+        tensorboard = TensorBoard(log_dir=appconfigs.tensorboard_logs_folder_location, histogram_freq=0, write_graph=True, write_images=True)
+        
+        callbacks_list = [checkpoint, earlystop, tensorboard]
+        
+        adam = Adam(lr=model_configs["lr"][0], beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+        model.compile(loss='sparse_categorical_crossentropy',
+                    optimizer=adam,
+                    metrics=['accuracy'])
 
-    hist = model.fit(X_train, Y_train, shuffle=True, batch_size=batch_size,
-                     epochs=nb_epoch, verbose=1,
-                     validation_data=(X_test, Y_test), callbacks=callbacks_list)
+        hist = model.fit(X_train, y_train, shuffle=True, batch_size=batch_size,
+                        epochs=nb_epoch, verbose=1,
+                        validation_data=(X_test, y_test), callbacks=callbacks_list)
 
-    # Evaluating the model on the test data
-    score, accuracy = model.evaluate(X_test, Y_test, verbose=0)
-    print('Test score:', score)
-    print('Test accuracy:', accuracy)
-    return hist, model
+        return hist, model, X_test, y_test
+    else:
+        adam = Adam(lr=model_configs["lr"][0], beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+        model.compile(loss='sparse_categorical_crossentropy',
+                    optimizer=adam,
+                    metrics=['accuracy'])
+        return None, model, X_test, y_test  
