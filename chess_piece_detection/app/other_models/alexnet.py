@@ -22,16 +22,16 @@ def train_alexnet_model(model_configs, train_model=True, num_samples=None):
 
     print("Alexnet model...")
 
-    X_train, y_train = utils.get_required_data_with_labels_for_CNN(appconfigs.location_of_train_data, num_samples, dimensions=(224, 224))
+    X_train, y_train = utils.get_required_data_with_labels_for_CNN(appconfigs.location_of_train_data, num_samples)
 
-    X_test, y_test = utils.get_required_data_with_labels_for_CNN(appconfigs.location_of_test_data, num_samples, dimensions=(224, 224))
+    X_test, y_test = utils.get_required_data_with_labels_for_CNN(appconfigs.location_of_test_data, num_samples)
 
 
     # Initialize model
     alexnet = Sequential()
 
     # Layer 1
-    alexnet.add(Conv2D(96, (11, 11), input_shape=(224, 224, 3),
+    alexnet.add(Conv2D(96, (11, 11), input_shape=(200, 200, 3),
                        padding='same', kernel_regularizer=l2(0.)))
     alexnet.add(BatchNormalization())
     alexnet.add(Activation('relu'))
