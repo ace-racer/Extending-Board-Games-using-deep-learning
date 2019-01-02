@@ -13,6 +13,7 @@ import appconfigs
 import constants
 import models
 import modelconfigs
+from other_models import alexnet
 
 set_random_seed(42)
 
@@ -33,6 +34,9 @@ if __name__ == "__main__":
     elif model_name == "cnn":
         configs_to_use = modelconfigs.customCNNconfigs
         model_trainer = models.train_custom_cnn_model
+    elif model_name == "alexnet":
+        configs_to_use = modelconfigs.alexNetconfigs
+        model_trainer = alexnet.train_alexnet_model
     # TODO: add other models
     else:
         raise ValueError("Model name not mentioned correctly")
