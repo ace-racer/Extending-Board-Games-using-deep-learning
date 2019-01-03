@@ -1,9 +1,11 @@
 # import the necessary packages
+"""
 from keras.applications.inception_v3 import InceptionV3
 from keras.layers import Dense, GlobalAveragePooling2D
 from keras.applications.inception_v3 import preprocess_input
 from keras.preprocessing import image
 from keras.models import Model
+"""
 from PIL import Image
 import numpy as np
 import flask
@@ -13,6 +15,9 @@ import constants, configurations, chess_piece_recognition, chess_board_segmentat
 
 # initialize our Flask application and the Keras model
 app = flask.Flask(__name__)
+
+# TODO: move to Redis cache
+existing_board = []
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -62,6 +67,10 @@ def digitize_chess_board():
             print(move_number)
 
             if gameid and move_number and image:
+                current_chess_board = utils.generate_dummy_board()
+                existing_board.append(current_chess_board)
+
+                data["board"] = existing_board
                 # indicate that the request was a success
                 data["success"] = True
 
