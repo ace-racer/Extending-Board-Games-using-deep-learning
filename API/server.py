@@ -9,7 +9,7 @@ import numpy as np
 import flask
 import io
 
-import constants, configurations, chess_piece_recognition, chess_board_segmentation
+import constants, configurations, chess_piece_recognition, chess_board_segmentation, utils
 
 # initialize our Flask application and the Keras model
 app = flask.Flask(__name__)
@@ -43,11 +43,37 @@ def predict():
     # return the data dictionary as a JSON response
     return flask.jsonify(data)
 
+@app.route("/digitize_board", methods=["POST"])
+def digitize_chess_board():
+    # initialize the data dictionary that will be returned from the
+    # view
+    data = {"success": False}
+
+    # ensure an image was properly uploaded to our endpoint
+    if flask.request.method == "POST":
+        if flask.request.files.get("image"):
+            # read the image in PIL format
+            image = flask.request.files["image"].read()
+            image = Image.open(io.BytesIO(image))
+            gameid = flask.request.form["gameid"]
+            move_number = flask.request.form["move_number"]
+
+            print(gameid)
+            print(move_number)
+
+            if gameid and move_number and image:
+                # indicate that the request was a success
+                data["success"] = True
+
+
+    # return the data dictionary as a JSON response
+    return flask.jsonify(data)
+
 
 # if this is the main thread of execution first load the model and
 # then start the server
 if __name__ == "__main__":
     print(("* Loading Keras model and Flask starting server..."
         "please wait until server has fully started"))
-    chess_piece_recognition.load_model()
+    # chess_piece_recognition.load_model()
     app.run()
