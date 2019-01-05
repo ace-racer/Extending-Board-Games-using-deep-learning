@@ -145,3 +145,23 @@ def get_score_confusion_matrix(X_test, y_test, model, model_config, load_weights
     y_test_pred = [np.argmax(x) for x in test_predictions]
     cnf_matrix = confusion_matrix(y_test, y_test_pred)
     plot_confusion_matrix(cnf_matrix, classes=constants.class_names, normalize=True,title='Normalized confusion matrix')
+
+def create_partition_and_labels():
+    partition = {}
+    labels = {}
+    partition["train"] = []
+    partition["test"] = []
+    for folder in os.listdir(appconfigs.location_of_train_data):
+        for f in os.path.join(appconfigs.location_of_train_data, folder):
+            image_id = "train_" + folder + "_" + f.split(".")[0]
+            partition["train"].append(image_id)
+            labels[image_id].append(folder)
+
+    for folder in os.listdir(appconfigs.location_of_test_data):
+        for f in os.path.join(appconfigs.location_of_test_data, folder):
+            image_id = "test_" + folder + "_" + f.split(".")[0]
+            partition["test"].append(image_id)
+            labels[image_id].append(folder)
+
+    return partition, labels
+
