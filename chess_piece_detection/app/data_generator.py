@@ -58,7 +58,7 @@ class DataGenerator(keras.utils.Sequence):
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             image_id_split = ID.split("_")
-            image_location = os.path.join(appconfigs.base_data_location, image_id_split[0], "".join(image_id_split[2:]) + ".jpg")
+            image_location = os.path.join(appconfigs.base_data_location, image_id_split[0], "_".join(image_id_split[2:]) + ".jpg")
             
             # basic pre-processing of the images
             img = image.load_img(image_location, target_size=self.dim)

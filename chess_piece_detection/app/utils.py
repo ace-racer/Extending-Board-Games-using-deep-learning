@@ -167,7 +167,7 @@ def create_partition_and_labels():
                 if f.endswith(".jpg"):
                     image_id = "train_" + folder + "_" + f.split(".")[0]
                     partition["train"].append(image_id)
-                    labels[image_id].append(folder)
+                    labels[image_id] = folder
 
     for folder in os.listdir(appconfigs.location_of_test_data):
         if os.path.isdir(os.path.join(appconfigs.location_of_test_data, folder)):
@@ -175,6 +175,6 @@ def create_partition_and_labels():
                 if f.endswith(".jpg"):
                     image_id = "test_" + folder + "_" + f.split(".")[0]
                     partition["test"].append(image_id)
-                    labels[image_id].append(folder)
+                    labels[image_id] = folder
 
     return partition, labels
