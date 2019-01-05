@@ -45,7 +45,7 @@ def base64_encode_image(image):
     # base64 encode the input NumPy array
     return base64.b64encode(image).decode("utf-8")
 
-def base64_decode_image(image_obj, shape, dtype="float32"):
+def base64_decode_image(image_obj, shape, dtype="uint8"):
     """
     Ref: https://www.pyimagesearch.com/2018/01/29/scalable-keras-deep-learning-rest-api/
     Usage: 
@@ -57,11 +57,13 @@ def base64_decode_image(image_obj, shape, dtype="float32"):
 
     # convert the string to a NumPy array using the supplied data type and target shape
     image = np.frombuffer(base64.decodestring(image), dtype=dtype)
+    print("decoded image shape")
+    print(image.shape)
 
-    #num_channels = 3
-    #required_shape = (1, shape[0], shape[1], num_channels)
-    #image = image.reshape(required_shape)
-    resized_image = cv2.resize(image, shape, interpolation=cv2.INTER_AREA)
+    num_channels = 3
+    required_shape = (shape[0], shape[1], num_channels)
+    image = image.reshape(required_shape)
+    # resized_image = cv2.resize(image, shape, interpolation=cv2.INTER_AREA)
 
     # return the decoded image
     return image
