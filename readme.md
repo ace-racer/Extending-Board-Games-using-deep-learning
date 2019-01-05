@@ -1,6 +1,4 @@
 ## Set up keras/TF environment in school machines
-## Login as administrator
-User name: .\issuser Password: Pass1-iss
 
 ### Install anaconda, if not there
 ### Install git, if not there
