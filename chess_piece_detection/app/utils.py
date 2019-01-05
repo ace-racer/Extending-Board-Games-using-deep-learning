@@ -152,18 +152,21 @@ def create_partition_and_labels():
     partition["train"] = []
     partition["test"] = []
     for folder in os.listdir(appconfigs.location_of_train_data):
-        for f in os.path.join(appconfigs.location_of_train_data, folder):
-            if f.endswith(".jpg"):
-                image_id = "train_" + folder + "_" + f.split(".")[0]
-                partition["train"].append(image_id)
-                labels[image_id].append(folder)
+        if os.path.isdir(os.path.join(appconfigs.location_of_train_data, folder)):
+			for f in os.listdir(os.path.join(appconfigs.location_of_train_data, folder)):
+				print(f)
+				if f.endswith(".jpg"):
+					image_id = "train_" + folder + "_" + f.split(".")[0]
+					partition["train"].append(image_id)
+					labels[image_id].append(folder)
 
     for folder in os.listdir(appconfigs.location_of_test_data):
-        for f in os.path.join(appconfigs.location_of_test_data, folder):
-            if f.endswith(".jpg"):
-                image_id = "test_" + folder + "_" + f.split(".")[0]
-                partition["test"].append(image_id)
-                labels[image_id].append(folder)
+        if os.path.isdir(os.path.join(appconfigs.location_of_test_data, folder)):
+			for f in os.listdir(os.path.join(appconfigs.location_of_test_data, folder)):
+				if f.endswith(".jpg"):
+					image_id = "test_" + folder + "_" + f.split(".")[0]
+					partition["test"].append(image_id)
+					labels[image_id].append(folder)
 
     return partition, labels
 

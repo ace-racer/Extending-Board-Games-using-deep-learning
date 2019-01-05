@@ -37,6 +37,8 @@ def train_InceptionV3_transfer_learning_model(model_configs, train_model=True, n
     lrs = model_configs["lr"]
 
     partition, labels = utils.create_partition_and_labels()
+    print(partition)
+    print(labels)
 
     # Parameters
     params = {'dim': (299, 299),
