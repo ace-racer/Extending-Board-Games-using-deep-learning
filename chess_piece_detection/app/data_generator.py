@@ -69,6 +69,6 @@ class DataGenerator(keras.utils.Sequence):
             X[i,] = x
 
             # Store class
-            y[i] = constants.class_names_reverse_mappings[self.labels[ID]]
+            y[i] = constants.folder_reverse_mappings[self.labels[ID]]
 
         return X, y

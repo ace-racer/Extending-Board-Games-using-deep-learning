@@ -2,3 +2,4 @@ class_names = ["white_bishop", "white_king", "white_knight", "white_pawn", "whit
 class_names_reverse_mappings = {"white_bishop": 0, "white_king": 1, "white_knight":2, "white_pawn":3, "white_queen":4, "white_rook":5, "black_bishop": 6, "black_king": 7, "black_knight": 8, "black_pawn": 9, "black_queen": 10, "black_rook": 11, "empty":12}
 class_names_folder_mappings = {"white_bishop": ["wb"], "white_king": ["wk"], "white_knight":["wn"], "white_pawn":["wp"], "white_queen":["wq"], "white_rook":["wr"], "black_bishop": ["bb"], "black_king": ["bk"], "black_knight":["bn"], "black_pawn":["bp"], "black_queen":["bq"], "black_rook":["br"], "empty":["empty"]}
 num_output_classes = len(class_names)
+folder_reverse_mappings = {"wb": 0, "wk": 1, "wn":2, "wp":3, "wq":4, "wr":5, "bb": 6, "bk": 7, "bn": 8, "bp": 9, "bq": 10, "br": 11, "empty":12}
