@@ -45,6 +45,7 @@ def get_required_data_with_labels_for_InceptionV3(base_location, num_samples=Non
 
     return X, y
 
+
 def get_required_data_with_labels_for_CNN(base_location, num_samples=None, dimensions=(200, 200)):
     X, y = [], []
     for class_name in constants.class_names_folder_mappings:
@@ -78,6 +79,7 @@ def get_required_data_with_labels_for_CNN(base_location, num_samples=None, dimen
         X /= 255
 
     return X, y
+
 
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
@@ -124,27 +126,34 @@ def plot_train_validation_accuracy(historyobj):
     plt.legend(['train', 'test'], loc='upper left')
     plt.show()
 
+
 def create_artifact_folders():
     if not os.path.exists(appconfigs.model_folder_location):
         os.makedirs(appconfigs.model_folder_location)
 
     if not os.path.exists(appconfigs.tensorboard_logs_folder_location):
-        os.makedirs(appconfigs.tensorboard_logs_folder_location)  
+        os.makedirs(appconfigs.tensorboard_logs_folder_location)
 
-def get_score_confusion_matrix(X_test, y_test, model, model_config, load_weights = True):
+
+def get_score_confusion_matrix(X_test, y_test, model, model_config, load_weights=True):
     if load_weights:
         model_weights_file_names = model_config["model_weights_file_name"]
-        required_model_weight_file_name = model_weights_file_names[model_config["model_weights_file_to_use"]]
-        model.load_weights(os.path.join(appconfigs.model_folder_location, required_model_weight_file_name))
+        required_model_weight_file_name = model_weights_file_names[
+            model_config["model_weights_file_to_use"]]
+        model.load_weights(os.path.join(
+            appconfigs.model_folder_location, required_model_weight_file_name))
 
     score = model.evaluate(X_test, y_test, verbose=0)
     print("Score: " + str(score))
 
     # plt.rcParams["figure.figsize"] = (10,10)
-    test_predictions = model.predict(X_test, batch_size=model_config["batch_size"][0])
+    test_predictions = model.predict(
+        X_test, batch_size=model_config["batch_size"][0])
     y_test_pred = [np.argmax(x) for x in test_predictions]
     cnf_matrix = confusion_matrix(y_test, y_test_pred)
-    plot_confusion_matrix(cnf_matrix, classes=constants.class_names, normalize=True,title='Normalized confusion matrix')
+    plot_confusion_matrix(cnf_matrix, classes=constants.class_names,
+                          normalize=True, title='Normalized confusion matrix')
+
 
 def create_partition_and_labels():
     partition = {}
@@ -153,20 +162,19 @@ def create_partition_and_labels():
     partition["test"] = []
     for folder in os.listdir(appconfigs.location_of_train_data):
         if os.path.isdir(os.path.join(appconfigs.location_of_train_data, folder)):
-			for f in os.listdir(os.path.join(appconfigs.location_of_train_data, folder)):
-				print(f)
-				if f.endswith(".jpg"):
-					image_id = "train_" + folder + "_" + f.split(".")[0]
-					partition["train"].append(image_id)
-					labels[image_id].append(folder)
+            for f in os.listdir(os.path.join(appconfigs.location_of_train_data, folder)):
+                print(f)
+                if f.endswith(".jpg"):
+                    image_id = "train_" + folder + "_" + f.split(".")[0]
+                    partition["train"].append(image_id)
+                    labels[image_id].append(folder)
 
     for folder in os.listdir(appconfigs.location_of_test_data):
         if os.path.isdir(os.path.join(appconfigs.location_of_test_data, folder)):
-			for f in os.listdir(os.path.join(appconfigs.location_of_test_data, folder)):
-				if f.endswith(".jpg"):
-					image_id = "test_" + folder + "_" + f.split(".")[0]
-					partition["test"].append(image_id)
-					labels[image_id].append(folder)
+            for f in os.listdir(os.path.join(appconfigs.location_of_test_data, folder)):
+                if f.endswith(".jpg"):
+                    image_id = "test_" + folder + "_" + f.split(".")[0]
+                    partition["test"].append(image_id)
+                    labels[image_id].append(folder)
 
     return partition, labels
-
