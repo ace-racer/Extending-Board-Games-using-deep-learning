@@ -17,15 +17,12 @@ import appconfigs
 
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
-    def __init__(self, list_IDs, labels, batch_size=32, dim=(32,32,32), n_channels=1,
-                 n_classes=10, shuffle=True):
+    def __init__(self, list_IDs, labels, batch_size=32, dim=(32,32,32), shuffle=True):
         'Initialization'
         self.dim = dim
         self.batch_size = batch_size
         self.labels = labels
         self.list_IDs = list_IDs
-        self.n_channels = n_channels
-        self.n_classes = n_classes
         self.shuffle = shuffle
         self.on_epoch_end()
 
@@ -55,7 +52,7 @@ class DataGenerator(keras.utils.Sequence):
     def __data_generation(self, list_IDs_temp):
         'Generates data containing batch_size samples' # X : (n_samples, *dim, n_channels)
         # Initialization
-        X = np.empty((self.batch_size, *self.dim, self.n_channels))
+        X = np.empty((self.batch_size, *self.dim, 3))
         y = np.empty((self.batch_size), dtype=int)
 
         # Generate data
