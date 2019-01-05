@@ -1,11 +1,4 @@
 # import the necessary packages
-"""
-from keras.applications.inception_v3 import InceptionV3
-from keras.layers import Dense, GlobalAveragePooling2D
-from keras.applications.inception_v3 import preprocess_input
-from keras.preprocessing import image
-from keras.models import Model
-"""
 from PIL import Image
 import numpy as np
 import flask
@@ -67,8 +60,11 @@ def digitize_chess_board():
             print(move_number)
 
             if gameid and move_number and image:
-                current_chess_board = utils.generate_dummy_board()
-                existing_board.append(current_chess_board)
+                if len(existing_board) > 0:
+                    current_element = utils.simulate_move()
+                else:
+                    current_element = utils.generate_dummy_board()
+                existing_board.append(current_element)
 
                 data["board"] = existing_board
                 # indicate that the request was a success
