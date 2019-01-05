@@ -2,6 +2,7 @@ from itertools import product
 import numpy as np
 import random
 import base64
+import cv2
 
 cols = list("abcdefgh")
 rows = list("12345678")
@@ -57,9 +58,10 @@ def base64_decode_image(image_obj, shape, dtype="float32"):
     # convert the string to a NumPy array using the supplied data type and target shape
     image = np.frombuffer(base64.decodestring(image), dtype=dtype)
 
-    num_channels = 3
-    required_shape = (1, shape[0], shape[1], num_channels)
-    image = image.reshape(required_shape)
+    #num_channels = 3
+    #required_shape = (1, shape[0], shape[1], num_channels)
+    #image = image.reshape(required_shape)
+    resized_image = cv2.resize(image, shape, interpolation=cv2.INTER_AREA)
 
     # return the decoded image
     return image
