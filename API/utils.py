@@ -26,9 +26,11 @@ def generate_dummy_board(num_pieces=32):
 
 
 def simulate_move():
+    chosen_positions = random.sample(board_positions, 2)
+    chosen_pieces = random.sample(all_pieces, 1)
     moves = {}
-    moves["d3"] = "wp"
-    moves["d2"] = "empty"
+    moves[chosen_positions[0]] = chosen_pieces[0]
+    moves[chosen_positions[1]] = "empty"
     return moves
 
 
