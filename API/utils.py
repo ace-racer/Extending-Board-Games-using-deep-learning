@@ -10,7 +10,7 @@ cartesian_product = list(product(cols, rows))
 
 board_positions = [x[0] + x[1] for x in cartesian_product]
 
-chess_pieces = list("p"*8 + "n"*2 + "r"*2 + "b"*2 + "k" + "q")
+chess_pieces = list("P"*8 + "N"*2 + "R"*2 + "B"*2 + "K" + "Q")
 
 black_pieces = ["b" + x for x in chess_pieces]
 white_pieces = ["w" + x for x in chess_pieces]
