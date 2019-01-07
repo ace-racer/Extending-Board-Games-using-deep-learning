@@ -8,18 +8,18 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-NUM_IMAGES_FOR_ELEVATION_ANGLE = 4 # 360 * 4
-NUM_ELEVATION_ANGLES = 5 # 50
-STL_FILES_LOCATION = "H:\\AR-ExtendingOnlineGames\\3d_pieces\\Chess_Set_-_Print_Friendly\\files"
-GENERATED_FILES_BASE_LOC = "H:\\AR-ExtendingOnlineGames\\3d_pieces\\images"
+NUM_IMAGES_FOR_ELEVATION_ANGLE = 100
+NUM_ELEVATION_ANGLES = 10
+STL_FILES_LOCATION = "G:\\ExtendingBoardGamesOnline\\3d data"
+GENERATED_FILES_BASE_LOC = "G:\\ExtendingBoardGamesOnline\\generated_from_3d"
 
 # constants
 stl_file_names = ["Bishop", "King", "Knight", "Pawn", "Queen", "Rook"]
 piece_names = ["b", "k", "n", "p", "q", "r"]
 white_piece_names = ["w"+x for x in piece_names]
 black_piece_names = ["b"+x for x in piece_names]
-MIN_ELEVATION_ANGLE = 10
-MAX_ELEVATION_ANGLE = 20
+MIN_ELEVATION_ANGLE = 12
+MAX_ELEVATION_ANGLE = 23
 
 # calculated values
 total_images = NUM_IMAGES_FOR_ELEVATION_ANGLE * (NUM_ELEVATION_ANGLES + 1)
