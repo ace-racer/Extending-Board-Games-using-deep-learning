@@ -96,8 +96,8 @@ def train_InceptionV3_transfer_learning_model(model_configs, train_model=True, n
         _ = model.fit_generator(
             generator=training_generator,
             validation_data=validation_generator,
-            use_multiprocessing=True,
-            workers=6,
+            use_multiprocessing=False,
+            workers=0,
             epochs=epochs,
             callbacks=callbacks_list)
 
@@ -129,8 +129,8 @@ def train_InceptionV3_transfer_learning_model(model_configs, train_model=True, n
         history = model.fit_generator(
             generator=training_generator,
             validation_data=validation_generator,
-            use_multiprocessing=True,
-            workers=6,
+            use_multiprocessing=False,
+            workers=0,
             epochs=epochs,
             callbacks=callbacks_list)
 

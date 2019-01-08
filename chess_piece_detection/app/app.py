@@ -4,6 +4,8 @@ import numpy as np
 import os
 import sys
 
+os.environ['KERAS_BACKEND'] = 'tensorflow'
+
 # TF/Keras imports
 from tensorflow import set_random_seed
 
