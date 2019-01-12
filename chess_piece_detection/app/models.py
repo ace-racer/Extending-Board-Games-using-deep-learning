@@ -92,12 +92,11 @@ def train_InceptionV3_transfer_learning_model(model_configs, train_model=True, n
                                   histogram_freq=0, write_graph=True, write_images=True)
         callbacks_list = [checkpoint, early_stopping, tensorboard]
 
-        # TODO: replace with fit generator
         _ = model.fit_generator(
             generator=training_generator,
             validation_data=validation_generator,
-            use_multiprocessing=False,
-            workers=0,
+            use_multiprocessing=True,
+            workers=4,
             epochs=epochs,
             callbacks=callbacks_list)
 
@@ -129,8 +128,8 @@ def train_InceptionV3_transfer_learning_model(model_configs, train_model=True, n
         history = model.fit_generator(
             generator=training_generator,
             validation_data=validation_generator,
-            use_multiprocessing=False,
-            workers=0,
+            use_multiprocessing=True,
+            workers=4,
             epochs=epochs,
             callbacks=callbacks_list)
 
