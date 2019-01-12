@@ -166,8 +166,8 @@ class ChessBoardSegmentation:
                 x2 = int(x0 - 4000*(-b))
                 y2 = int(y0 - 4000*(a))
                 cv2.line(img,(x1,y1),(x2,y2),(0,0,255),2)
-            cv2.imwrite('E:\\Semester 3\\Applied Research\\chess_board_segmentation\\Outputs\\' + outputs_folder_name + '_lines.jpg', img)
-            #cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, outputs_folder_name, ))
+            #cv2.imwrite('E:\\Semester 3\\Applied Research\\chess_board_segmentation\\Outputs\\' + outputs_folder_name + '_lines.jpg', img)
+            cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, outputs_folder_name +  '_lines.jpg'), img)
         
         # Cluster intersection points
         points = self.cluster(points)
@@ -175,7 +175,8 @@ class ChessBoardSegmentation:
         if True:
             for point in points:
                 cv2.circle(img, tuple(point), 5, (0,0,255), -1)
-            cv2.imwrite('E:\\Semester 3\\Applied Research\\chess_board_segmentation\\Outputs\\' + outputs_folder_name + '_all_points.jpg', img)
+            # cv2.imwrite('E:\\Semester 3\\Applied Research\\chess_board_segmentation\\Outputs\\' + outputs_folder_name + '_all_points.jpg', img)
+            cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, outputs_folder_name +  '_all_points.jpg'), img)
         
         # Find corners
         img_shape = np.shape(img)
@@ -184,7 +185,8 @@ class ChessBoardSegmentation:
         if True:
             for point in corner_points:
                 cv2.circle(img, tuple(point), 5, (0,255,0), -1)
-            cv2.imwrite('E:\\Semester 3\\Applied Research\\chess_board_segmentation\\Outputs\\' + outputs_folder_name + '_corner_points.jpg', img)
+            # cv2.imwrite('E:\\Semester 3\\Applied Research\\chess_board_segmentation\\Outputs\\' + outputs_folder_name + '_corner_points.jpg', img)
+            cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, outputs_folder_name +  '_corner_points.jpg'), img)
         
         # Perspective transform
         new_img = self.four_point_transform(img, corner_points)
@@ -202,7 +204,7 @@ class ChessBoardSegmentation:
                 image = img[i * sq_len : (i + 1) * sq_len, j * sq_len : (j + 1) * sq_len]
                 position = str(i) + "_" + str("j")
                 arr.append({"image": image, "position": position})
-                cv2.imwrite("E:\\Semester 3\\Applied Research\\chess_board_segmentation\\Outputs\\splitimages\\" +str(i)+"_"+str(j)+".jpg", img[i * sq_len : (i + 1) * sq_len, j * sq_len : (j + 1) * sq_len])
+                cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, "splitimages", str(i)+"_"+str(j)+".jpg"), image)
         return arr
 
 if __name__ == '__main__':
