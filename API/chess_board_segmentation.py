@@ -202,9 +202,9 @@ class ChessBoardSegmentation:
         for i in range(8):
             for j in range(8):
                 image = img[i * sq_len : (i + 1) * sq_len, j * sq_len : (j + 1) * sq_len]
-                position = str(i) + "_" + str("j")
+                position = str(i) + "_" + str(j)
                 arr.append({"image": image, "position": position})
-                cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, "splitimages", str(i)+"_"+str(j)+".jpg"), image)
+                cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, "splitimages", position+".jpg"), image)
         return arr
 
 if __name__ == '__main__':
