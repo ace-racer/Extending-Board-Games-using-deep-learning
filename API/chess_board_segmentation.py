@@ -8,6 +8,9 @@ from sklearn.utils import shuffle
 import matplotlib.pyplot as plt
 import os, glob, skimage, cv2, shutil
 from scipy.spatial.distance import cdist
+import os
+
+import configurations
 
 SQUARE_SIDE_LENGTH = 227
 categories = ['bb', 'bk', 'bn', 'bp', 'bq', 'br', 'empty', 'wb', 'wk', 'wn', 'wp', 'wq', 'wr']
@@ -164,6 +167,7 @@ class ChessBoardSegmentation:
                 y2 = int(y0 - 4000*(a))
                 cv2.line(img,(x1,y1),(x2,y2),(0,0,255),2)
             cv2.imwrite('E:\\Semester 3\\Applied Research\\chess_board_segmentation\\Outputs\\' + outputs_folder_name + '_lines.jpg', img)
+            #cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, outputs_folder_name, ))
         
         # Cluster intersection points
         points = self.cluster(points)
@@ -195,7 +199,9 @@ class ChessBoardSegmentation:
         sq_len = img.shape[0] // 8
         for i in range(8):
             for j in range(8):
-                arr.append(img[i * sq_len : (i + 1) * sq_len, j * sq_len : (j + 1) * sq_len])               
+                image = img[i * sq_len : (i + 1) * sq_len, j * sq_len : (j + 1) * sq_len]
+                position = str(i) + "_" + str("j")
+                arr.append({"image": image, "position": position})
                 cv2.imwrite("E:\\Semester 3\\Applied Research\\chess_board_segmentation\\Outputs\\splitimages\\" +str(i)+"_"+str(j)+".jpg", img[i * sq_len : (i + 1) * sq_len, j * sq_len : (j + 1) * sq_len])
         return arr
 
