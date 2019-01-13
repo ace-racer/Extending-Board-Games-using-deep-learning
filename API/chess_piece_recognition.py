@@ -12,48 +12,57 @@ import os
 import constants
 import configurations
 
+class ChessPieceRecognition:
+    def __init__(self):
+        self._model = self.load_model()
 
-def load_model():
-    global model
+    def load_model(self):
+        # load the model structure
+        inception_v3_model = InceptionV3(include_top=False)
+        x = inception_v3_model.output
+        x = GlobalAveragePooling2D()(x)
+        x = Dropout(0.25)(x)
+        x = Dense(1024, activation='relu')(x)
+        x = BatchNormalization()(x)
+        x = Dropout(0.5)(x)
+        predictions = Dense(constants.num_output_classes, activation='softmax')(x)
+        model = Model(inputs=inception_v3_model.input, outputs=predictions)
 
-    # load the model structure
-    inception_v3_model = InceptionV3(include_top=False)
-    x = inception_v3_model.output
-    x = GlobalAveragePooling2D()(x)
-    x = Dropout(0.25)(x)
-    x = Dense(1024, activation='relu')(x)
-    x = BatchNormalization()(x)
-    x = Dropout(0.5)(x)
-    predictions = Dense(constants.num_output_classes, activation='softmax')(x)
-    model = Model(inputs=inception_v3_model.input, outputs=predictions)
+        # load the model weights
+        model.load_weights(os.path.join(configurations.model_folder_name, configurations.model_name))
+        return model
 
-    # load the model weights
-    model.load_weights(os.path.join(configurations.model_folder_name, configurations.model_name))
+    def prepare_images(self, input_images, dimensions):
+        prepared_input_images = np.array([])
+        for input_image in input_images:
+            # basic pre-processing of the images
+            resized_input_image = input_image.resize(dimensions)
+            x = image.img_to_array(resized_input_image)
+            x = preprocess_input(x)
+            prepared_input_images.append(x)
 
-def prepare_image(input_image, dimensions):
-    # basic pre-processing of the images
-    resized_input_image = input_image.resize(dimensions)
-    x = image.img_to_array(resized_input_image)
+        # return the prepared images
+        return prepared_input_images
 
-    # since only single image so expand dims
-    x = np.expand_dims(x, axis=0)
-    x = preprocess_input(x)
+    def decode_predictions(self, predictions, positions):
+        # outputs a batch of predictions
+        print("Predictions...")
+        print(predictions)
+        positions_with_predictions = {}
+        for idx, prediction in enumerate(predictions):
+            predicted_class_id = np.argmax(prediction)
+            predicted_class_probability = prediction[predicted_class_id]
+            # predictions_with_confidence.append((constants.class_names[predicted_class_id], predicted_class_probability))
+            positions_with_predictions[positions[idx]] = constants.class_names[predicted_class_id]
 
-    # return the processed image
-    return x
+        return positions_with_predictions
 
-def decode_predictions(predictions):
-    # outputs a batch of predictions
-    print("Predictions...")
-    print(predictions)
-    required_prediction = predictions[0]
-    predicted_class_id = np.argmax(required_prediction)
-    predicted_class_probability = required_prediction[predicted_class_id]
-    return constants.class_names[predicted_class_id], predicted_class_probability
-
-def make_prediction(img):
-    preds = model.predict(img)
-    if preds is not None:
-        return decode_predictions(preds)
-    else:
-        return None
+    def predict_classes(self, segmented_images_with_positions):
+        segmented_images = [x["image"] for x in segmented_images_with_positions]
+        positions = [x["position"] for x in segmented_images_with_positions]
+        prepared_segmented_images = self.prepare_images(segmented_images, constants.InceptionV3_Image_Dimension)
+        preds = self._model.predict(prepared_segmented_images)
+        if preds is not None:
+            return self.decode_predictions(preds, positions)
+        else:
+            return None

@@ -1,6 +1,7 @@
 from redisprovider import RedisProvider
 from mongodbprovider import MongoDBProvider
 from chess_board_segmentation import ChessBoardSegmentation
+from chess_piece_recognition import ChessPieceRecognition
 import utils
 import constants
 import configurations
@@ -11,6 +12,9 @@ class RequestProcessor:
     def __init__(self):
         self._mongo_db_provider = MongoDBProvider()
         self._redis_provider = RedisProvider()
+        self._chess_pieces_recognizer = ChessPieceRecognition()
+        self._chess_board_segmenter = ChessBoardSegmentation()
+
 
     def process_chess_board_image(self, move_number, game_id, chess_board_image):
 
@@ -20,10 +24,9 @@ class RequestProcessor:
         self._mongo_db_provider.insert_record(request_obj, constants.request_chessboard_details_collection)
 
         # Step 2: Segment the chess board image and get a list of images
-        chess_board_segmenter = ChessBoardSegmentation()
-        board = chess_board_segmenter.find_board(chess_board_image, is_file=False)
+        board = self._chess_board_segmenter.find_board(chess_board_image, is_file=False)
         cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, "board_image_cropped.jpg"), board)
-        segmented_images = chess_board_segmenter.split_board(board)
+        segmented_images = self._chess_board_segmenter.split_board(board)
         serialized_segmented_images = [utils.base64_encode_image(x) for x in segmented_images]
         
         # Step 3: Store the segmented images in the segmented images collection after serialization
@@ -48,5 +51,5 @@ class RequestProcessor:
                 # TODO: compare the segmented images using hash values and add only required images to `segmented_images_for_classification`
 
         # Step 6: Classify the segmented images for classification
-        for segmeted_image in segmented_images_for_classification:
-            pass
+        return self._chess_pieces_recognizer.predict_classes(segmented_images_for_classification)
+
