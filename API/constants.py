@@ -1,5 +1,6 @@
-class_names = ["bishop", "king", "knight", "pawn", "queen", "rook", "empty"]
-class_names_reverse_mappings = {"bishop": 0, "king": 1, "knight":2, "pawn":3, "queen":4, "rook":5, "empty":6}
+class_names = ["wB", "wK", "wN", "wP", "wQ", "wR", "bB", "bK", "bN", "bP", "bQ", "bR", "empty"]
+full_class_names = ["white_bishop", "white_king", "white_knight", "white_pawn", "white_queen", "white_rook", "black_bishop", "black_king", "black_knight", "black_pawn", "black_queen", "black_rook", "empty"]
+num_output_classes = len(class_names)
 
 #Mongo DB and collections
 database_name="Extendingboardgames"

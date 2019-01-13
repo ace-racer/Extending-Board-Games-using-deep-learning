@@ -1,6 +1,6 @@
 # import the necessary packages
 from keras.applications.inception_v3 import InceptionV3
-from keras.layers import Dense, GlobalAveragePooling2D
+from keras.layers import Dense, GlobalAveragePooling2D, BatchNormalization, Dropout
 from keras.applications.inception_v3 import preprocess_input
 from keras.preprocessing import image
 from keras.models import Model
@@ -16,21 +16,18 @@ import configurations
 def load_model():
     global model
 
-    # create the base pre-trained model
+    # load the model structure
     inception_v3_model = InceptionV3(include_top=False)
-    
-    num_output_classes = len(constants.class_names)
-
-    # add a global spatial average pooling layer
     x = inception_v3_model.output
     x = GlobalAveragePooling2D()(x)
-    # let's add a fully-connected layer
+    x = Dropout(0.25)(x)
     x = Dense(1024, activation='relu')(x)
-    # and a logistic layer -- let's say we have 200 classes
-    predictions = Dense(num_output_classes, activation='softmax')(x)
-
-    # this is the model we will train
+    x = BatchNormalization()(x)
+    x = Dropout(0.5)(x)
+    predictions = Dense(constants.num_output_classes, activation='softmax')(x)
     model = Model(inputs=inception_v3_model.input, outputs=predictions)
+
+    # load the model weights
     model.load_weights(os.path.join(configurations.model_folder_name, configurations.model_name))
 
 def prepare_image(input_image, dimensions):
