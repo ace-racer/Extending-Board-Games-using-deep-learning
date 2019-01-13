@@ -11,6 +11,7 @@ import os
 
 import constants
 import configurations
+import utils
 
 class ChessPieceRecognition:
     def __init__(self):
@@ -33,15 +34,15 @@ class ChessPieceRecognition:
         return model
 
     def prepare_images(self, input_images, dimensions):
-        prepared_input_images = np.array([])
+        prepared_input_images = []
         for input_image in input_images:
-            print("Shape: " + str(input_image.shape))
+            # print("Shape: " + str(input_image.shape))
             # basic pre-processing of the images
-            resized_input_image = input_image.resize(dimensions)
-            x = image.img_to_array(resized_input_image)
-            x = preprocess_input(x)
-            prepared_input_images.append(x)
+            resized_input_image = utils.upsize_image(input_image, dimensions)
+            processed_image = preprocess_input(resized_input_image)
+            prepared_input_images.append(processed_image)
         
+        prepared_input_images = np.array(prepared_input_images)
         print(prepared_input_images.shape)
 
         # return the prepared images
@@ -50,7 +51,7 @@ class ChessPieceRecognition:
     def decode_predictions(self, predictions, positions):
         # outputs a batch of predictions
         print("Predictions...")
-        print(predictions)
+        #print(predictions)
         positions_with_predictions = {}
         for idx, prediction in enumerate(predictions):
             predicted_class_id = np.argmax(prediction)
@@ -61,6 +62,7 @@ class ChessPieceRecognition:
         return positions_with_predictions
 
     def predict_classes(self, segmented_images_with_positions):
+        print("Performing predictions...")
         segmented_images = [x["image"] for x in segmented_images_with_positions]
         positions = [x["position"] for x in segmented_images_with_positions]
         prepared_segmented_images = self.prepare_images(segmented_images, constants.InceptionV3_Image_Dimension)
