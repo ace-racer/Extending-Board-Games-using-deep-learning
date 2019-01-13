@@ -13,8 +13,9 @@ class MongoDBProvider:
     def insert_record(self, record, collection_name):
         self._database[collection_name].insert_one(record)
 
-    def retrieve_record(self,collection_name,key,value):
-        return self._database[collection_name].find_one({key: value})
+    def retrieve_record(self,collection_name, query_obj):
+        if query_obj:
+            return self._database[collection_name].find_one(query_obj)
 
 if __name__ == '__main__':
     mongodbprovider=MongoDBProvider()
@@ -22,4 +23,4 @@ if __name__ == '__main__':
 
     # mongodbprovider.insert_record(doc, "mongo")
     # mongodbprovider.insert_record(doc, "mongo")
-    print(mongodbprovider.retrieve_record("mongo", "piece", "wf"))
+    print(mongodbprovider.retrieve_record("mongo", {"piece": "wf"}))
