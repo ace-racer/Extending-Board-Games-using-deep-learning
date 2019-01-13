@@ -80,6 +80,39 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Segment chess board",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": ""
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/segment_board",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"segment_board"
+					]
+				},
+				"description": "Given a board are the correct 64 segments generated"
+			},
+			"response": []
 		}
 	]
 }
