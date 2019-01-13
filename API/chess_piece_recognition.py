@@ -40,7 +40,9 @@ class ChessPieceRecognition:
             x = image.img_to_array(resized_input_image)
             x = preprocess_input(x)
             prepared_input_images.append(x)
-
+        
+        print(prepared_input_images.shape)
+        
         # return the prepared images
         return prepared_input_images
 

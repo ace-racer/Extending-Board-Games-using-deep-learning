@@ -5,11 +5,12 @@ import flask
 import io
 
 import constants, configurations, utils
-from requestprocessor import RequestProcessor
 
 # initialize our Flask application and the Keras model
 app = flask.Flask(__name__)
-request_processor = RequestProcessor()
+
+existing_board = []
+
 
 @app.route("/digitize_board", methods=["POST"])
 def digitize_chess_board():
@@ -30,9 +31,13 @@ def digitize_chess_board():
             print(move_number)
 
             if gameid and move_number and image:
-                
-                positions_with_pieces = request_processor.process_chess_board_image(move_number, game_id, image)
-                data["board"] = positions_with_pieces
+                if len(existing_board) > 0:
+                    current_element = utils.simulate_move()
+                else:
+                    current_element = utils.generate_dummy_board()
+                existing_board.append(current_element)
+
+                data["board"] = existing_board
                 # indicate that the request was a success
                 data["success"] = True
 
