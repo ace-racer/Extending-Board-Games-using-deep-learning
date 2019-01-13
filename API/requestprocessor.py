@@ -5,6 +5,7 @@ from chess_piece_recognition import ChessPieceRecognition
 import utils
 import constants
 import configurations
+import cv2
 
 import os
 
@@ -17,6 +18,9 @@ class RequestProcessor:
 
 
     def process_chess_board_image(self, move_number, game_id, chess_board_image):
+        
+        # Step 0: Resize and perform any preprocessing on the incoming image
+        chess_board_image = utils.downsize_image(chess_board_image, configurations.REQUIRED_CHESS_BOARD_DIMENSION)
 
         # Step 1: serialize the incoming image and store request object for persistence
         serialized_chess_board_image = utils.base64_encode_image(chess_board_image)
@@ -27,7 +31,7 @@ class RequestProcessor:
         board = self._chess_board_segmenter.find_board(chess_board_image, is_file=False)
         cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, "board_image_cropped.jpg"), board)
         segmented_images = self._chess_board_segmenter.split_board(board)
-        serialized_segmented_images = [utils.base64_encode_image(x) for x in segmented_images]
+        serialized_segmented_images = {x["position"]: utils.base64_encode_image(x["image"]) for x in segmented_images}
         
         # Step 3: Store the segmented images in the segmented images collection after serialization
         segmented_images_obj = {"move_number": move_number, "game_id": game_id, "segmented_images": serialized_segmented_images}

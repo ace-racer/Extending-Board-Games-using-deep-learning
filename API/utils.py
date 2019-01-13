@@ -69,3 +69,6 @@ def base64_decode_image(image_obj, shape, dtype="uint8"):
 
     # return the decoded image
     return image
+
+def downsize_image(img, new_dimensions):
+    return cv2.resize(img, new_dimensions, interpolation = cv2.INTER_AREA)

@@ -35,6 +35,7 @@ class ChessPieceRecognition:
     def prepare_images(self, input_images, dimensions):
         prepared_input_images = np.array([])
         for input_image in input_images:
+            print("Shape: " + str(input_image.shape))
             # basic pre-processing of the images
             resized_input_image = input_image.resize(dimensions)
             x = image.img_to_array(resized_input_image)
@@ -42,7 +43,7 @@ class ChessPieceRecognition:
             prepared_input_images.append(x)
         
         print(prepared_input_images.shape)
-        
+
         # return the prepared images
         return prepared_input_images
 

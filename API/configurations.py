@@ -11,3 +11,6 @@ MONGO_DB_PORT=27017
 
 #Images location
 IMAGES_LOCATION = "H:\\AR-ExtendingOnlineGames\\ExtendingGames_Code\\API\\outputs"
+
+#Chess board resized image dimension
+REQUIRED_CHESS_BOARD_DIMENSION = (835, 817)

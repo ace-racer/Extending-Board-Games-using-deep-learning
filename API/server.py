@@ -31,6 +31,7 @@ def digitize_chess_board():
 
             if gameid and move_number and image:
                 image = np.array(image)
+                move_number = int(move_number)
                 print(image.shape)
                 positions_with_pieces = request_processor.process_chess_board_image(move_number, gameid, image)
                 data["board"] = positions_with_pieces
