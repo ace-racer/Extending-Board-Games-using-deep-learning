@@ -10,7 +10,7 @@ TODO
 
 ## System architecture
 The system is designed as a REST based application and a separate client consumes the different services that are exposed.
-![Architecture](/docs/arch_v1.png) 
+![Architecture](/doc/arch_v1.png) 
 
 ## Image recognition modules
 1. Inception V3
