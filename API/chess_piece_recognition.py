@@ -77,7 +77,7 @@ class ChessPieceRecognition:
             predictions_with_confidence = []
             for pred in preds:
                 predicted_class_id = np.argmax(pred)
-                predicted_class_confidence = pred[predicted_class_id]
+                predicted_class_confidence = str(round(pred[predicted_class_id], 5))
                 predictions_with_confidence.append({"type": constants.class_names[predicted_class_id], "confidence": predicted_class_confidence})
             
             return predictions_with_confidence
