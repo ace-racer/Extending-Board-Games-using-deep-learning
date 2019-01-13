@@ -13,8 +13,10 @@ The system is designed as a REST based application and a separate client consume
 ![Architecture](/doc/arch_v1.png) 
 
 ## Image recognition modules
-1. Inception V3
-2. Custom CNN
+
+1. Transfer learning perfomred on InceptionV3 pretrained on ImageNet to recognize chess piece images. Refer [here](https://keras.io/applications/#inceptionv3) for details.
+
+2. Custom CNN implementation to recognize chess piece images
 
 ## References
 1. https://medium.com/@daylenyang/building-chess-id-99afa57326cd
