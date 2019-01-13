@@ -62,6 +62,25 @@ def predict_piece():
 
     return flask.jsonify(data)
 
+@app.route("/segment_board", methods=["POST"])
+def segment_board():
+    data = {"success": False}
+
+    # ensure an image was properly uploaded to our endpoint
+    if flask.request.method == "POST":
+        if flask.request.files.get("image"):
+            # read the image in PIL format
+            image = flask.request.files["image"].read()
+            image = Image.open(io.BytesIO(image))
+
+            if image:
+                image = np.array(image)               
+                print(image.shape)
+                request_processor.segment_chess_board(image)
+                data["success"] = True
+
+    return flask.jsonify(data)
+
 # if this is the main thread of execution first load the model and
 # then start the server
 if __name__ == "__main__":

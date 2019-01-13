@@ -63,3 +63,11 @@ class RequestProcessor:
         images_for_recognition = np.array([piece_image])
         return self._chess_pieces_recognizer.predict_class_for_images(images_for_recognition)
 
+    def segment_chess_board(self, chess_board_image):
+        chess_board_image = utils.downsize_image(chess_board_image, configurations.REQUIRED_CHESS_BOARD_DIMENSION)
+        board = self._chess_board_segmenter.find_board(chess_board_image, is_file=False)
+        cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, "board_image_cropped.jpg"), board)
+        self._chess_board_segmenter.split_board(board)
+        
+
+

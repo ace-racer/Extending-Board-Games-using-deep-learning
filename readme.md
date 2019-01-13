@@ -1,19 +1,21 @@
-## Set up keras/TF environment in school machines
+# An application to extend board games like chess to digital forms
+## Use cases:
+1. Chess is just an example and the application is designed such that it is easily extended for any board game
+2. Players of the board games are in different geographies
+3. Input for a intelligent robot to play board games
+And many more....
 
-### Install anaconda, if not there
-### Install git, if not there
+## Source code structure
+TODO
 
-### Open conda prompt as an admin user
-1. List all environments:: conda env list
+## System architecture
+The system is designed as a REST based application and a separate client consumes the different services that are exposed.
+![Architecture](docs/arch_v1.png) 
 
-If the required environment does not already exist, then create it using the below steps:
-1. Create the environment: conda create --name chess [refer](https://conda.io/docs/user-guide/tasks/manage-environments.html)
-2. activate chess
-3. conda install scikit-learn
-4. conda install -c anaconda keras-gpu 
-5. conda install -c anaconda numpy 
-6. conda install -c conda-forge opencv 
-7. conda install -c conda-forge matplotlib 
-8. Clone the repo and download the data to folder in D drive
-9. Check how to enable keras in the jupyter note book runtime (Stackoverflow link) - TODO
-10. Run jupyter using the runtime to also run keras
+## Image recognition modules
+1. Inception V3
+2. Custom CNN
+
+## References
+1. https://medium.com/@daylenyang/building-chess-id-99afa57326cd
+2. https://www.pyimagesearch.com/2018/01/29/scalable-keras-deep-learning-rest-api/
