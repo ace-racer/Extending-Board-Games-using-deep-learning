@@ -31,7 +31,7 @@ def digitize_chess_board():
 
             if gameid and move_number and image:
                 
-                positions_with_pieces = request_processor.process_chess_board_image(move_number, game_id, image)
+                positions_with_pieces = request_processor.process_chess_board_image(move_number, gameid, image)
                 data["board"] = positions_with_pieces
                 # indicate that the request was a success
                 data["success"] = True

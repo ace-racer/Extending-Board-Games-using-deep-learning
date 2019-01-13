@@ -10,4 +10,4 @@ MONGO_DB_HOST="localhost"
 MONGO_DB_PORT=27017
 
 #Images location
-IMAGES_LOCATION = "E:\\Semester 3\\Applied Research\\chess_board_segmentation\\Outputs"
+IMAGES_LOCATION = "H:\\AR-ExtendingOnlineGames\\ExtendingGames_Code\\API\\outputs"
