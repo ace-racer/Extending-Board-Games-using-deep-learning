@@ -9,7 +9,7 @@ from requestprocessor import RequestProcessor
 
 # initialize our Flask application and the Keras model
 app = flask.Flask(__name__)
-request_processor = RequestProcessor()
+global request_processor
 
 @app.route("/digitize_board", methods=["POST"])
 def digitize_chess_board():
@@ -42,9 +42,28 @@ def digitize_chess_board():
     # return the data dictionary as a JSON response
     return flask.jsonify(data)
 
+@app.route("/predict_piece", methods=["POST"])
+def predict_piece():
+    data = {"success": False}
+
+    # ensure an image was properly uploaded to our endpoint
+    if flask.request.method == "POST":
+        if flask.request.files.get("image"):
+            # read the image in PIL format
+            image = flask.request.files["image"].read()
+            image = Image.open(io.BytesIO(image))
+
+            if image:
+                image = np.array(image)               
+                print(image.shape)
+                piece_types_with_confidence = request_processor.predict_piece_type(image)
+                data["piece_details"] = piece_types_with_confidence
+                data["success"] = True
+
+    return flask.jsonify(data)
 
 # if this is the main thread of execution first load the model and
 # then start the server
 if __name__ == "__main__":
-
+    request_processor = RequestProcessor()
     app.run()

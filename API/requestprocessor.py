@@ -6,6 +6,7 @@ import utils
 import constants
 import configurations
 import cv2
+import numpy as np
 
 import os
 
@@ -55,5 +56,10 @@ class RequestProcessor:
                 # TODO: compare the segmented images using hash values and add only required images to `segmented_images_for_classification`
 
         # Step 6: Classify the segmented images for classification
-        return self._chess_pieces_recognizer.predict_classes(segmented_images_for_classification)
+        return self._chess_pieces_recognizer.predict_classes_for_segmented_images(segmented_images_for_classification)
+
+
+    def predict_piece_type(self, piece_image):
+        images_for_recognition = np.array([piece_image])
+        return self._chess_pieces_recognizer.predict_class_for_images(images_for_recognition)
 
