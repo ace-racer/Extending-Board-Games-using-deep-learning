@@ -47,13 +47,33 @@ class RequestProcessor:
         if previous_move_number >= 0:
             print("Previous move number is {0}".format(previous_move_number))
             last_move_segmented_images_query = {"move_number": previous_move_number, "game_id": game_id}
-            previous_move_segmented_images = self._mongo_db_provider.retrieve_record(constants.segmented_chessboard_details_collection, last_move_segmented_images_query)
+            previous_move_segmented_images_obj = self._mongo_db_provider.retrieve_record(constants.segmented_chessboard_details_collection, last_move_segmented_images_query)
 
-            if previous_move_segmented_images and previous_move_segmented_images.get("segmented_images"):
+            if previous_move_segmented_images_obj:
                 print("Previous move and segmented images for the previous move exists")
+                previous_move_segmented_images = previous_move_segmented_images_obj.get("segmented_images")
 
-                # Step 5: Compare the segmented images for the last move to find differences
-                # TODO: compare the segmented images using hash values and add only required images to `segmented_images_for_classification`
+                if previous_move_segmented_images:
+                    required_positions = []
+                    segmented_images_for_classification = []
+
+                    # Step 5: Compare the segmented images for the last move to find differences
+                    # compare the segmented images using hash values and add only required images to `segmented_images_for_classification`
+                    # TODO: replace with hash values for faster comparison
+                    for pos in previous_move_segmented_images:
+                        required_segment_current_board = serialized_segmented_images.get(pos)
+                        if required_segment_current_board:
+                            if required_segment_current_board != previous_move_segmented_images[pos]:
+                                print("The position {0} has changed".format(pos))
+                                required_positions.append(pos)
+                            else:
+                                print("The position {0} has not changed...".format(pos))
+                        else:
+                            print("The position {0} does not exist for the current board...".format(pos))
+
+                    segmented_images_for_classification = [x for x in segmented_images if x["position"] in required_positions]
+
+
 
         # Step 6: Classify the segmented images for classification
         return self._chess_pieces_recognizer.predict_classes_for_segmented_images(segmented_images_for_classification)
