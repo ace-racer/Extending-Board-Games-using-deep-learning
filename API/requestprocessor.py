@@ -73,10 +73,11 @@ class RequestProcessor:
 
                     segmented_images_for_classification = [x for x in segmented_images if x["position"] in required_positions]
 
-
-
-        # Step 6: Classify the segmented images for classification
-        return self._chess_pieces_recognizer.predict_classes_for_segmented_images(segmented_images_for_classification)
+        # perform detection only if the segmented images list is not empty
+        if len(segmented_images_for_classification) > 0:
+            # Step 6: Classify the segmented images for classification
+            return self._chess_pieces_recognizer.predict_classes_for_segmented_images(segmented_images_for_classification)
+        return []
 
 
     def predict_piece_type(self, piece_image):

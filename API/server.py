@@ -35,8 +35,11 @@ def digitize_chess_board():
                 print(image.shape)
                 positions_with_pieces = request_processor.process_chess_board_image(move_number, gameid, image)
                 data["board"] = positions_with_pieces
-                # indicate that the request was a success
                 data["success"] = True
+            else:
+                data["message"] = "Game Id and move number are mandatory for the request..."
+        else:
+            data["message"] = "Chess board image not part of request..."
 
 
     # return the data dictionary as a JSON response
