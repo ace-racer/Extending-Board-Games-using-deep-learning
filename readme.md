@@ -22,11 +22,11 @@ And many more....
     ├── chess_board_segmentation            # Contains notebooks to evaluate different algorithms to segment chess board
     |── chess_piece_detection               # Contains code for different deep learning models trained to detect chess pieces
     │   ├── app
-    |       ├── appconfigs.py               # Different configurations that are required for training the models (like location of training     |       |                               # images etc.)
+    |       ├── appconfigs.py               # Different configurations that are required for training the models (like location of training  images etc.)
     │       ├── modelconfigs.py             # Contains the configurations for the different models used during training the model
     │       |── constants.py                # The constants used across the training app
     │       ├── models.py                   # Contains the different models that are trained
-    │       ├── data_generator.py           # Contains the data generator for generating the training data in batches. [Refer]                  |       |                               # (https://stanford.edu/~shervine/blog/keras-how-to-generate-data-on-the-fly)      
+    │       ├── data_generator.py           # Contains the data generator for generating the training data in batches. [Refer]                 (https://stanford.edu/~shervine/blog/keras-how-to-generate-data-on-the-fly)      
     │       ├── utils.py                    # Contains the utility methods for obtaining the data, printing confusion matrix etc.
     │       └── app.py                      # Tie all codes together and train or evaluate the required model based on the arguments passed
     |── training_data_analysis              # Contains code to analyze the training data
