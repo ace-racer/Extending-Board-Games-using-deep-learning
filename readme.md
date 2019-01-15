@@ -1,4 +1,4 @@
-# An application to extend board games like chess to digital forms
+# An application to extend board games like chess to digital forms using image processing and image recognition using deep learning
 ## Use cases:
 1. Chess is just an example and the application is designed such that it is easily extended for any board game
 2. Players of the board games are in different geographies
