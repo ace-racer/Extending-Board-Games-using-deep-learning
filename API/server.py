@@ -6,10 +6,12 @@ import io
 
 import constants, configurations, utils
 from requestprocessor import RequestProcessor
+from redisprovider import RedisProvider
 
 # initialize our Flask application and the Keras model
 app = flask.Flask(__name__)
 global request_processor
+global redis_provider
 
 @app.route("/digitize_board", methods=["POST"])
 def digitize_chess_board():
@@ -34,7 +36,15 @@ def digitize_chess_board():
                 move_number = int(move_number)
                 print(image.shape)
                 positions_with_pieces = request_processor.process_chess_board_image(move_number, gameid, image)
-                data["board"] = positions_with_pieces
+                existing_boards = redis_provider.get_value_in_redis(gameid)
+                
+                # create the existing boards if they do not exist in Redis
+                if not existing_boards:
+                    existing_boards = {}
+                existing_boards[move_number] = positions_with_pieces
+                redis_provider.set_value_in_redis(gameid, existing_boards)
+                
+                data["board"] = existing_boards
                 data["success"] = True
             else:
                 data["message"] = "Game Id and move number are mandatory for the request..."
@@ -88,4 +98,5 @@ def segment_board():
 # then start the server
 if __name__ == "__main__":
     request_processor = RequestProcessor()
+    redis_provider = RedisProvider()
     app.run()

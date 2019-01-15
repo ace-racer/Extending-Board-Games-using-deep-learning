@@ -19,6 +19,7 @@ class ChessPieceRecognition:
 
     def load_model(self):
         # load the model structure
+        print("Loading model for inference...")
         inception_v3_model = InceptionV3(include_top=False)
         x = inception_v3_model.output
         x = GlobalAveragePooling2D()(x)
@@ -64,7 +65,7 @@ class ChessPieceRecognition:
         segmented_images = [x["image"] for x in segmented_images_with_positions]
         positions = [x["position"] for x in segmented_images_with_positions]
         prepared_segmented_images = self.prepare_images(segmented_images, constants.InceptionV3_Image_Dimension)
-        preds = self._model.predict(prepared_segmented_images)
+        preds = self._model.predict(prepared_segmented_images, batch_size=64)
         if preds is not None:
             return self.decode_predictions_for_segmented_images(preds, positions)
         else:
@@ -72,7 +73,7 @@ class ChessPieceRecognition:
 
     def predict_class_for_images(self, chess_piece_images):
         prepared_images = self.prepare_images(chess_piece_images, constants.InceptionV3_Image_Dimension)
-        preds = self._model.predict(prepared_images)
+        preds = self._model.predict(prepared_images, batch_size=64)
         if preds is not None:
             predictions_with_confidence = []
             for pred in preds:

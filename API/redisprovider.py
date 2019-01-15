@@ -1,5 +1,6 @@
 import redis
 import configurations
+import json
 
 class RedisProvider:
     def __init__(self):
@@ -9,10 +10,17 @@ class RedisProvider:
             print(e)
 
     def set_value_in_redis(self,key,value):
-        self.db.set(key,value)
+        if key and value:
+            value_to_store = json.dumps(value)
+            self.db.set(key,value_to_store)
 
     def get_value_in_redis(self, key):
-        return self.db.get(key)
+        if key:
+            retrieved_value = self.db.get(key)
+            if retrieved_value:
+                return json.loads(retrieved_value)
+            return None
+        return None
 
         
 if __name__ == '__main__':
