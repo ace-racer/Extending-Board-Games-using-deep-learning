@@ -83,7 +83,8 @@ class ChessBoardSegmentation:
         """
         Returns the list of points, sorted by distance from loc.
         """
-        return points[cdist([loc], points).argmin()]
+        dists = np.array(map(partial(spatial.distance.euclidean, loc), points))
+        return points[dists.argmin()]
 
     def find_corners(self, points, img_dim):
         """
@@ -134,12 +135,15 @@ class ChessBoardSegmentation:
             img = fname
 
         assert img is not None
+        cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION,  'img.jpg'), img)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         gray = cv2.blur(gray, (3, 3)) # TODO auto adjust the size of the blur
         
         # Canny edge detection
         edges = self.auto_canny(gray)
-        # assert np.count_nonzero(edges) / float(gray.shape[0] * gray.shape[1]) < 0.015
+        cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION,  'edges.jpg'), edges)
+        assert np.count_nonzero(edges) / float(gray.shape[0] * gray.shape[1]) < 0.015
+        print("Number of edges: "+str(edges))
 
         # Hough line detection
         lines = cv2.HoughLines(edges, 1, np.pi/180, 200)
@@ -152,8 +156,8 @@ class ChessBoardSegmentation:
         h, v = self.hor_vert_lines(lines)
         print(h)
         print(v)
-        #assert len(h) >= 9
-        #assert len(v) >= 9
+        assert len(h) >= 9
+        assert len(v) >= 9
         
         print("Number of horizontal lines: " + str(len(h)))
         print("Number of vertical lines: " + str(len(v)))
@@ -204,12 +208,13 @@ class ChessBoardSegmentation:
         """
         Given a board image, returns an array of 64 smaller images.
         """
+        row = "abcdefgh"
         arr = []
         sq_len = img.shape[0] // 8
         for i in range(8):
             for j in range(8):
                 image = img[i * sq_len : (i + 1) * sq_len, j * sq_len : (j + 1) * sq_len]
-                position = str(i) + "_" + str(j)
+                position = str(row[i]) + "_" + str(j+1)
                 arr.append({"image": image, "position": position})
 
                 if create_files:
@@ -218,6 +223,6 @@ class ChessBoardSegmentation:
 
 if __name__ == '__main__':
     cbs = ChessBoardSegmentation()
-    board = cbs.find_board('C:\\Users\\Sriraj\\Desktop\\sriraj\\chess-id-master\\image-14.png', "image-14")
-    cv2.imwrite('E:\\Semester 3\\Applied Research\\chess_board_segmentation\\Outputs\\image-14_crop.jpg', board)
+    board = cbs.find_board('C:\\Users\\Sriraj\\Desktop\\sriraj\\chess-id-master\\Faculty\\ChessBoard\\IMG_7018.jpg', "IMG_7033")
+    cv2.imwrite('E:\\Semester 3\\Applied Research\\chess_board_segmentation\\Outputs\\IMG_7018.jpg', board)
     cbs.split_board(board)
