@@ -4,21 +4,20 @@ import os
 import itertools
 import random
 
-# Keras/TF imports
 import cv2
+from sklearn.model_selection import train_test_split
 
 IMAGES_LOCATION = "H:\\AR-ExtendingOnlineGames\\crawled_chess_piece_images"
 IMAGE_SIZE = (200, 200)
 
-X_train = []
-y_train = []
-X_val = []
-y_val = []
+X_train_original = []
+y_train_original = []
+
 
 training_images = os.path.join(IMAGES_LOCATION, "train")
 validation_images = os.path.join(IMAGES_LOCATION, "test")
 
-samples_per_type = {"b": 20, "n": 15, "k": 15, "p": 25, "q": 15, "r": 25}
+samples_per_type = {"b": 30, "n": 25, "k": 25, "p": 35, "q": 25, "r": 35}
 files_with_labels = []
 
 for type_name in samples_per_type:
@@ -46,11 +45,15 @@ for item1, item2 in cartesian_product:
     img2 = cv2.resize(img2, IMAGE_SIZE, interpolation=cv2.INTER_AREA)
 
     label = int(item1[1] == item2[1])
-    X_train.append([img1, img2])
-    y_train.append(label)
+    X_train_original.append([img1, img2])
+    y_train_original.append(label)
 
-X_train = np.array(X_train)
-y_train = np.array(y_train)
+X_train_original = np.array(X_train_original)
+y_train_original = np.array(y_train_original)
 
-print(X_train.shape)
-print(y_train.shape)
+print(X_train_original.shape)
+print(y_train_original.shape)
+
+# split into train and validation splits
+X_train, X_test, y_train, y_test = train_test_split(X_train_original, y_train_original, test_size=0.33, random_state=42, stratify = y_train_original)
+
