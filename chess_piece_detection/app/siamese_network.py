@@ -3,7 +3,7 @@ Initial code from: https://sorenbouma.github.io/blog/oneshot/
 
 """
 import keras
-from keras.layers import Input, Conv2D, Lambda, average, Dense, Flatten,MaxPooling2D
+from keras.layers import Input, Conv2D, Lambda, average, Dense, Flatten, MaxPooling2D, BatchNormalization, Dropout, Activation
 from keras.models import Model, Sequential
 from keras.regularizers import l2
 from keras import backend as K
@@ -26,23 +26,30 @@ def b_init(shape,name=None):
     values=rng.normal(loc=0.5,scale=1e-2,size=shape)
     return K.variable(values,name=name)
 
-input_shape = (200, 200, 3)
+input_shape = (100, 100, 3)
 left_input = Input(input_shape)
 right_input = Input(input_shape)
 
 #build convnet to use in each siamese 'leg'
 convnet = Sequential()
-convnet.add(Conv2D(64,(10,10),activation='relu',input_shape=input_shape,
+
+convnet.add(Conv2D(32,(5,5),input_shape=input_shape,
                    kernel_initializer=W_init,kernel_regularizer=l2(2e-4)))
+convnet.add(BatchNormalization())
+convnet.add(Activation('relu'))
 convnet.add(MaxPooling2D())
-convnet.add(Conv2D(128,(7,7),activation='relu',
-                   kernel_regularizer=l2(2e-4),kernel_initializer=W_init,bias_initializer=b_init))
+
+convnet.add(Conv2D(64,(4,4), kernel_regularizer=l2(2e-4),kernel_initializer=W_init,bias_initializer=b_init))
+convnet.add(BatchNormalization())
+convnet.add(Activation('relu'))
 convnet.add(MaxPooling2D())
-convnet.add(Conv2D(128,(4,4),activation='relu',kernel_initializer=W_init,kernel_regularizer=l2(2e-4),bias_initializer=b_init))
-convnet.add(MaxPooling2D())
-convnet.add(Conv2D(256,(4,4),activation='relu',kernel_initializer=W_init,kernel_regularizer=l2(2e-4),bias_initializer=b_init))
+
+convnet.add(Conv2D(128,(4,4), kernel_initializer=W_init,kernel_regularizer=l2(2e-4),bias_initializer=b_init))
+convnet.add(BatchNormalization())
+convnet.add(Activation('relu'))
 convnet.add(Flatten())
-convnet.add(Dense(4096,activation="sigmoid",kernel_regularizer=l2(1e-3),kernel_initializer=W_init,bias_initializer=b_init))
+convnet.add(Dropout(0.4))
+convnet.add(Dense(1024,activation="relu",kernel_regularizer=l2(1e-3),kernel_initializer=W_init,bias_initializer=b_init))
 
 #encode each of the two inputs into a vector with the convnet
 encoded_l = convnet(left_input)

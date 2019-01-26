@@ -17,7 +17,7 @@ IMAGES_LOCATION = "H:\\AR-ExtendingOnlineGames\\crawled_chess_piece_images"
 samples_per_type = {"b": 3, "n": 2, "k": 2, "p": 3, "q": 2, "r": 3}
 
 # training parameters
-IMAGE_SIZE = (200, 200)
+IMAGE_SIZE = (100, 100)
 CHECKPOINTS_LOCATION = "weights"
 LOGS_LOCATION = "logs"
 BATCH_SIZE = 64
