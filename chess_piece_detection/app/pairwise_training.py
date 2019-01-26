@@ -68,6 +68,8 @@ for item1, item2 in cartesian_product:
     y_train_original.append(label)
 
 X_train_original = np.array(X_train_original)
+X_train_original = X_train_original.astype('float32')
+X_train_original /= 255
 y_train_original = np.array(y_train_original)
 
 print(X_train_original.shape)
@@ -75,6 +77,19 @@ print(y_train_original.shape)
 
 # split into train and validation splits
 X_train, X_test, y_train, y_test = train_test_split(X_train_original, y_train_original, test_size=0.25, random_state=42, stratify = y_train_original)
+
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+
+X_train_left = X_train[:, 0, ...]
+X_train_right = X_train[:, 1, ...]
+print(X_train_left.shape)
+print(X_train_right.shape)
+
+X_test_left = X_test[:, 0, ...]
+X_test_right = X_test[:, 1, ...]
 
 
 filepath = os.path.join(CHECKPOINTS_LOCATION, "siamese.hdf5")
@@ -89,6 +104,8 @@ callbacks_list = [checkpoint, earlystop, tensorboard]
 
 
 model = siamese_network.siamese_net
-hist = model.fit(X_train, y_train, shuffle=True, batch_size=BATCH_SIZE,epochs=NUM_EPOCHS, verbose=1, validation_data=(X_test, y_test), callbacks=callbacks_list)
+X_train_instances = [X_train_left, X_train_right]
+
+hist = model.fit(X_train_instances, y_train, shuffle=True, batch_size=BATCH_SIZE,epochs=NUM_EPOCHS, verbose=1, validation_split = 0.25, callbacks=callbacks_list)
 
 
