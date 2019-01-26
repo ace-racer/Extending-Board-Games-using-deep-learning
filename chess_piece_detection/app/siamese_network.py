@@ -20,7 +20,7 @@ def W_init(shape,name=None):
     """Initialize weights as in paper"""
     values = rng.normal(loc=0,scale=1e-2,size=shape)
     return K.variable(values,name=name)
-#//TODO: figure out how to initialize layer biases in keras.
+
 def b_init(shape,name=None):
     """Initialize bias as in paper"""
     values=rng.normal(loc=0.5,scale=1e-2,size=shape)
@@ -29,6 +29,7 @@ def b_init(shape,name=None):
 input_shape = (200, 200, 3)
 left_input = Input(input_shape)
 right_input = Input(input_shape)
+
 #build convnet to use in each siamese 'leg'
 convnet = Sequential()
 convnet.add(Conv2D(64,(10,10),activation='relu',input_shape=input_shape,
@@ -55,8 +56,7 @@ siamese_net = Model(inputs=[left_input,right_input],outputs=prediction)
 
 optimizer = Adam(0.00006)
 
-#//TODO: get layerwise learning rates and momentum annealing scheme described in paperworking
-siamese_net.compile(loss="binary_crossentropy",optimizer=optimizer)
+siamese_net.compile(loss="binary_crossentropy", optimizer=optimizer, metrics=['accuracy'])
 
 print(siamese_net.count_params())
 print(siamese_net.summary())

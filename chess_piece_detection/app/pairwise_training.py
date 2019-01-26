@@ -7,8 +7,27 @@ import random
 import cv2
 from sklearn.model_selection import train_test_split
 
+from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
+import siamese_network
+
+# change as required
 IMAGES_LOCATION = "H:\\AR-ExtendingOnlineGames\\crawled_chess_piece_images"
+
+#samples_per_type = {"b": 30, "n": 25, "k": 25, "p": 35, "q": 25, "r": 35}
+samples_per_type = {"b": 3, "n": 2, "k": 2, "p": 3, "q": 2, "r": 3}
+
+# training parameters
 IMAGE_SIZE = (200, 200)
+CHECKPOINTS_LOCATION = "weights"
+LOGS_LOCATION = "logs"
+BATCH_SIZE = 64
+NUM_EPOCHS = 200
+
+if not os.path.exists(CHECKPOINTS_LOCATION):
+    os.makedirs(CHECKPOINTS_LOCATION)
+
+if not os.path.exists(LOGS_LOCATION):
+    os.makedirs(LOGS_LOCATION)
 
 X_train_original = []
 y_train_original = []
@@ -17,7 +36,7 @@ y_train_original = []
 training_images = os.path.join(IMAGES_LOCATION, "train")
 validation_images = os.path.join(IMAGES_LOCATION, "test")
 
-samples_per_type = {"b": 30, "n": 25, "k": 25, "p": 35, "q": 25, "r": 35}
+
 files_with_labels = []
 
 for type_name in samples_per_type:
@@ -55,5 +74,21 @@ print(X_train_original.shape)
 print(y_train_original.shape)
 
 # split into train and validation splits
-X_train, X_test, y_train, y_test = train_test_split(X_train_original, y_train_original, test_size=0.33, random_state=42, stratify = y_train_original)
+X_train, X_test, y_train, y_test = train_test_split(X_train_original, y_train_original, test_size=0.25, random_state=42, stratify = y_train_original)
+
+
+filepath = os.path.join(CHECKPOINTS_LOCATION, "siamese.hdf5")
+
+checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+
+earlystop = EarlyStopping(monitor='val_acc', min_delta=0.001, patience=10, verbose=1, mode='max')
+
+tensorboard = TensorBoard(log_dir=LOGS_LOCATION, histogram_freq=0, write_graph=True, write_images=True)
+
+callbacks_list = [checkpoint, earlystop, tensorboard]
+
+
+model = siamese_network.siamese_net
+hist = model.fit(X_train, y_train, shuffle=True, batch_size=BATCH_SIZE,epochs=NUM_EPOCHS, verbose=1, validation_data=(X_test, y_test), callbacks=callbacks_list)
+
 
