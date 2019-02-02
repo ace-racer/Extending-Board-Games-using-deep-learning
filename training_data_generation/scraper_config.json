@@ -1,0 +1,20 @@
+{
+    "Records": [
+        {
+            "keywords": "chess king",
+            "output_directory": "H:\\AR-ExtendingOnlineGames\\crawled_chess_piece_images",
+            "print_urls": true,
+            "format": "jpg", 
+            "limit": 1000,
+            "chromedriver": "G:\\Selenium_Chrome\\chromedriver.exe"
+        },
+        {
+            "keywords": "chess queen",
+            "output_directory": "H:\\AR-ExtendingOnlineGames\\crawled_chess_piece_images",
+            "print_urls": true,
+            "format": "jpg", 
+            "limit": 1000,
+            "chromedriver": "G:\\Selenium_Chrome\\chromedriver.exe"
+        }
+    ]
+}
