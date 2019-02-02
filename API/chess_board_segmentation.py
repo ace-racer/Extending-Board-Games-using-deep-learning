@@ -223,6 +223,6 @@ class ChessBoardSegmentation:
 
 if __name__ == '__main__':
     cbs = ChessBoardSegmentation()
-    board = cbs.find_board('C:\\Users\\Sriraj\\Desktop\\sriraj\\chess-id-master\\Faculty\\ChessBoard\\IMG_7018.jpg', "IMG_7033")
-    cv2.imwrite('E:\\Semester 3\\Applied Research\\chess_board_segmentation\\Outputs\\IMG_7018.jpg', board)
+    board = cbs.find_board('C:\\Users\\Sriraj\\Documents\\Boardgames\\API\\outputs\\IMG_7318.jpg', "IMG_7318")
+    cv2.imwrite('C:\\Users\\Sriraj\\Documents\\Boardgames\\API\\outputs\\IMG_7318.jpg', board)
     cbs.split_board(board)
