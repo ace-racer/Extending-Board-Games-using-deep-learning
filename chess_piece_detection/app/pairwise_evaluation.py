@@ -15,7 +15,7 @@ IMAGE_SIZE = (100, 100)
 CHECKPOINTS_LOCATION = "H:\\AR-ExtendingOnlineGames\\ExtendingGames_Code\\models\\siamese\\weights\\weights"
 REPRESENTATIVE_IMAGES = "H:\\AR-ExtendingOnlineGames\\crawled_chess_piece_images_git\\crawled_1901\\repr"
 
-test_file_location = "H:\\AR-ExtendingOnlineGames\\crawled_chess_piece_images_git\\crawled_1901\\repr\\b.jpg"
+test_file_location = "H:\\AR-ExtendingOnlineGames\\crawled_chess_piece_images_git\\crawled_1901\\test\\b\\2. chess_piece_-_white_bishop.jpg"
 
 model = siamese_network.siamese_net
 model.load_weights(os.path.join(CHECKPOINTS_LOCATION, "siamese.hdf5"))
