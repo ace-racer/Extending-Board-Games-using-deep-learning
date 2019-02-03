@@ -75,6 +75,25 @@ def predict_piece():
 
     return flask.jsonify(data)
 
+@app.route("/predict_color", methods=["POST"])
+def predict_color():
+    data = {"success": False}
+
+    # ensure an image was properly uploaded to our endpoint
+    if flask.request.method == "POST":
+        if flask.request.files.get("image"):
+            # read the image in PIL format
+            image = flask.request.files["image"].read()
+            image = Image.open(io.BytesIO(image))
+
+            if image:
+                image = np.array(image)               
+                piece_colors = request_processor.predict_piece_color_empty(image)
+                data["piece_details"] = piece_colors
+                data["success"] = True
+
+    return flask.jsonify(data)
+
 @app.route("/segment_board", methods=["POST"])
 def segment_board():
     data = {"success": False}

@@ -75,3 +75,22 @@ def downsize_image(img, new_dimensions):
 
 def upsize_image(img, new_dimensions):
     return cv2.resize(img, new_dimensions, interpolation = cv2.INTER_LINEAR)
+
+def convert_to_grayscale_enhance_contrast(image):
+    """
+    Converts the image to grayscale and then enhances the contrast of the image
+    """
+    # downsize image
+    resized_image = cv2.resize(image, (200, 200), interpolation = cv2.INTER_AREA)
+
+    # convert to gray scale
+    gray = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+    
+    # perform histogram equalization to enhance the contrast
+    gray = cv2.equalizeHist(gray)
+    
+    # get the histogram
+    hist = cv2.calcHist([gray],[0],None,[256],[0,256])
+
+    # squeeze to get the required dimension
+    return np.squeeze(hist)

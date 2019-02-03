@@ -8,6 +8,7 @@ from PIL import Image
 import numpy as np
 import io
 import os
+import joblib
 
 import constants
 import configurations
@@ -16,6 +17,7 @@ import utils
 class ChessPieceRecognition:
     def __init__(self):
         self._model = self.load_model()
+        self._xgb_model = joblib.load(configurations.xgb_model_location)
 
     def load_model(self):
         # load the model structure
@@ -84,4 +86,11 @@ class ChessPieceRecognition:
             return predictions_with_confidence
         else:
             return None
+
+    def predict_color_empty_for_image(self, chess_piece_images):
+        image_histograms = np.array([utils.convert_to_grayscale_enhance_contrast(x) for x in chess_piece_images])
+        predictions = self._xgb_model.predict(image_histograms)
+        predictions_str = [constants.NUMBER_TO_CATEGORY_MAPPING[x] for x in predictions]
+        return predictions_str
+
 

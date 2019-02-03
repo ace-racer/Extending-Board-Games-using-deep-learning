@@ -7,3 +7,4 @@ InceptionV3_Image_Dimension = (299, 299)
 database_name="Extendingboardgames"
 request_chessboard_details_collection="RequestChessBoardDetails"
 segmented_chessboard_details_collection="SegmentedChessBoardDetails"
+NUMBER_TO_CATEGORY_MAPPING = {0: "b", 1: "w", 2: "e"}

@@ -91,6 +91,11 @@ class RequestProcessor:
         board = self._chess_board_segmenter.find_board(chess_board_image, "chess_board_image", is_file=False)
         cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, "board_image_cropped.jpg"), board)
         self._chess_board_segmenter.split_board(board)
+
+    def predict_piece_color_empty(self, piece_image):
+        images_for_recognition = np.array([piece_image])
+        return self._chess_pieces_recognizer.predict_color_empty_for_image(images_for_recognition)
+
         
 
 
