@@ -54,12 +54,12 @@
 						},
 						{
 							"key": "gameid",
-							"value": "TD123",
+							"value": "TD125",
 							"type": "text"
 						},
 						{
 							"key": "move_number",
-							"value": "1",
+							"value": "2",
 							"type": "text"
 						}
 					]
@@ -111,6 +111,39 @@
 					]
 				},
 				"description": "Given a board are the correct 64 segments generated"
+			},
+			"response": []
+		},
+		{
+			"name": "Predict piece color",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": ""
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/predict_color",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"predict_color"
+					]
+				},
+				"description": "Predict the color of the piece or if the position is empty"
 			},
 			"response": []
 		}
