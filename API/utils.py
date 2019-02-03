@@ -92,5 +92,7 @@ def convert_to_grayscale_enhance_contrast(image):
     # get the histogram
     hist = cv2.calcHist([gray],[0],None,[256],[0,256])
 
+    print(hist.shape)
+
     # squeeze to get the required dimension
     return np.squeeze(hist)
