@@ -71,7 +71,13 @@ image_width = corners[2][0] - corners[0][0]
 print("Height: " + str(image_height))
 print("Width: " + str(image_width))
 
-cropped_image = resized[corners[0][1]: corners[0][1] + image_height, corners[2][0] - image_width : corners[2][0]]
+max_height = max(corners[2][1], corners[3][1])
+max_width = max(corners[1][0], corners[2][0])
+
+print("Max height: " + str(max_height))
+print("Max width: " + str(max_width))
+
+cropped_image = resized[corners[0][1]: max_height, corners[0][0] : max_width]
 cv2.imwrite(os.path.join(SPLIT_IMAGES_LOCATION, "cropped_board.jpg"), cropped_image)
 split_board(cropped_image)
 
