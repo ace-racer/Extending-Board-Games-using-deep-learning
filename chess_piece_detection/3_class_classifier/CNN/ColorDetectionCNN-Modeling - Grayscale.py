@@ -84,7 +84,7 @@ def get_features_labels(data_path):
     return np.array(X), np.array(y)
 	
 X_train, y_train = get_features_labels("C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\Chess ID Public Data\\train")
-X_test, y_test = get_features_labels("C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\Chess ID Public Data\\test")
+X_test, y_test = get_features_labels("C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\myboard_images")
 print(X_train.shape)
 print(y_train.shape)
 print(X_test.shape)
