@@ -15,6 +15,19 @@ set_random_seed(42)
 
 
 IMAGE_SIZE = (70, 70)
+
+def auto_canny(image, sigma=0.33):
+	# compute the median of the single channel pixel intensities
+	v = np.median(image)
+ 
+	# apply automatic Canny edge detection using the computed median
+	lower = int(max(0, (1.0 - sigma) * v))
+	upper = int(min(255, (1.0 + sigma) * v))
+	edged = cv2.Canny(image, lower, upper)
+ 
+	# return the edged image
+	return edged
+
 def process_image(image_location):
     image = cv2.imread(image_location)
     
@@ -25,10 +38,14 @@ def process_image(image_location):
         resized_image = image
     
     gray = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
-    denoised = cv2.fastNlMeansDenoising(gray,None)
-    #hist_equalized = cv2.equalizeHist(denoised)
+    edges = auto_canny(gray)
+    #print(edges.shape)
+    
+    
+    # assert(denoised != edges)
+    weighted_sum = cv2.addWeighted(gray, 0.8, edges, 0.2, 0)
        
-    return denoised
+    return weighted_sum
 	
 def get_features_labels(data_path):
     X, y = [], []
@@ -93,6 +110,11 @@ def train_3_class_cnn_model(X_train, Y_train, X_test, Y_test):
     model.add(MaxPooling2D(pool_size=(2, 2)))
     
     model.add(Conv2D(64, (3, 3)))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+	
+    model.add(Conv2D(128, (3, 3)))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
