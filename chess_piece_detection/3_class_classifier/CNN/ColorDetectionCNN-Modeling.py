@@ -54,8 +54,12 @@ def get_features_labels(data_path):
     #print(X[0][1])
     X = [x["feature"] for x in features_with_labels]
     y = [x["label"] for x in features_with_labels]
+	
+    X = np.array(X)
+    X = X.astype('float32')
+    X /= 255
 
-    return np.array(X), np.array(y)
+    return X, np.array(y)
 	
 X_train, y_train = get_features_labels("C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\Chess ID Public Data\\train")
 X_test, y_test = get_features_labels("C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\Chess ID Public Data\\test")
@@ -88,7 +92,7 @@ def train_3_class_cnn_model(X_train, Y_train, X_test, Y_test):
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     
-    model.add(Dropout(0.25))
+    model.add(Dropout(0.5))
 
     model.add(Flatten())
     model.add(Dense(256))
