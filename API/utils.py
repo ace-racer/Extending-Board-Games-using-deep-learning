@@ -4,6 +4,8 @@ import random
 import base64
 import cv2
 
+import configurations
+
 cols = list("abcdefgh")
 rows = list("12345678")
 cartesian_product = list(product(cols, rows))
@@ -96,3 +98,34 @@ def convert_to_grayscale_enhance_contrast(image):
 
     # squeeze to get the required dimension
     return np.squeeze(hist)
+
+def auto_canny(image, sigma=0.33):
+	# compute the median of the single channel pixel intensities
+	v = np.median(image)
+ 
+	# apply automatic Canny edge detection using the computed median
+	lower = int(max(0, (1.0 - sigma) * v))
+	upper = int(min(255, (1.0 + sigma) * v))
+	edged = cv2.Canny(image, lower, upper)
+ 
+	# return the edged image
+	return edged
+
+def process_image_three_class_cnn(image_location):
+    image = cv2.imread(image_location)
+    
+    if image.shape[0] != configurations.CHESS_BLOCK_IMAGE_SIZE[0] or image.shape[1] != configurations.CHESS_BLOCK_IMAGE_SIZE[1]:
+        # print("Resizing the image: {0}".format(image_location))
+        resized_image = cv2.resize(image, configurations.CHESS_BLOCK_IMAGE_SIZE, interpolation = cv2.INTER_AREA)
+    else:
+        resized_image = image
+    
+    gray = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+    edges = auto_canny(gray)
+    #print(edges.shape)
+    
+    
+    # assert(denoised != edges)
+    weighted_sum = cv2.addWeighted(gray, 0.8, edges, 0.2, 0)
+       
+    return weighted_sum

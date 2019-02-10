@@ -3,6 +3,7 @@ model_name = "chess_pieces_inceptionv3_p2.hdf5"
 
 # XGBoost model for 3 class classification color and empty
 xgb_model_location = "H:\\AR-ExtendingOnlineGames\\ExtendingGames_Code\\models\\xgboost\\3class_acc1000.joblib"
+three_class_cnn_model_location = "models/custom_cnn_95.hdf5"
 
 #Redis Configurations
 redis_host = "localhost"
@@ -17,3 +18,6 @@ IMAGES_LOCATION = "H:\\AR-ExtendingOnlineGames\\ExtendingGames_Code\\API\\output
 
 #Chess board resized image dimension
 REQUIRED_CHESS_BOARD_DIMENSION = (835, 817)
+
+# size of the chess block
+CHESS_BLOCK_IMAGE_SIZE = (70, 70)
