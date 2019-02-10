@@ -3,7 +3,7 @@ from keras.applications.inception_v3 import InceptionV3
 from keras.layers import Dense, GlobalAveragePooling2D, BatchNormalization, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
 from keras.applications.inception_v3 import preprocess_input
 from keras.preprocessing import image
-from keras.models import Model
+from keras.models import Model, Sequential
 from keras import optimizers
 from PIL import Image
 import numpy as np
@@ -39,6 +39,8 @@ class ChessPieceRecognition:
 
     def load_3_class_cnn_model(self):
         """Load the 3 class CNN model for inference"""
+        required_input_shape = (*configurations.CHESS_BLOCK_IMAGE_SIZE, 1)
+
         model = Sequential()
         model.add(Conv2D(32, (3, 3), padding='valid', input_shape=required_input_shape))
         model.add(BatchNormalization())

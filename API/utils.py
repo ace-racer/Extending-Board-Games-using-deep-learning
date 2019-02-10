@@ -111,8 +111,7 @@ def auto_canny(image, sigma=0.33):
 	# return the edged image
 	return edged
 
-def process_image_three_class_cnn(image_location):
-    image = cv2.imread(image_location)
+def process_image_three_class_cnn(image):
     
     if image.shape[0] != configurations.CHESS_BLOCK_IMAGE_SIZE[0] or image.shape[1] != configurations.CHESS_BLOCK_IMAGE_SIZE[1]:
         # print("Resizing the image: {0}".format(image_location))
