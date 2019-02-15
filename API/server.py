@@ -118,4 +118,4 @@ def segment_board():
 if __name__ == "__main__":
     request_processor = RequestProcessor()
     redis_provider = RedisProvider()
-    app.run()
+    app.run(debug=True)
