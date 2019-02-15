@@ -26,15 +26,15 @@ class RequestProcessor:
         # Step 1: serialize the incoming image and store request object for persistence
         serialized_chess_board_image = utils.base64_encode_image(chess_board_image)
         request_obj = {"move_number": move_number, "game_id": game_id, "chess_board_image": serialized_chess_board_image}
-        self._mongo_db_provider.insert_record(request_obj, constants.request_chessboard_details_collection)
+        #self._mongo_db_provider.insert_record(request_obj, constants.request_chessboard_details_collection)
 
         # Step 2: Segment the chess board image and get a list of images
-        segmented_images = self._chess_board_segmenter.segment_board_corners_provided(board, is_file=False)
+        segmented_images = self._chess_board_segmenter.segment_board_corners_provided(chess_board_image, is_file=False)
         serialized_segmented_images = {x["position"]: utils.base64_encode_image(x["image"]) for x in segmented_images}
         
         # Step 3: Store the segmented images in the segmented images collection after serialization
         segmented_images_obj = {"move_number": move_number, "game_id": game_id, "segmented_images": serialized_segmented_images}
-        self._mongo_db_provider.insert_record(segmented_images_obj, constants.segmented_chessboard_details_collection)
+        #self._mongo_db_provider.insert_record(segmented_images_obj, constants.segmented_chessboard_details_collection)
 
         # Step 4: Retrieve the segmented images for the last move for the same game
         previous_move_number = move_number - 1

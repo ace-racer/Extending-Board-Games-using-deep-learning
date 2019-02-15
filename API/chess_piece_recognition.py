@@ -129,7 +129,7 @@ class ChessPieceRecognition:
         return predictions_str
 
 
-    def predict_pieces_given_colors(segmented_images, predicted_colors):
+    def predict_pieces_given_colors(self, segmented_images, predicted_colors):
         return [x + "P" for x in predicted_colors if x != "empty"]
 
 
