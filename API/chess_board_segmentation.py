@@ -16,6 +16,14 @@ SQUARE_SIDE_LENGTH = 227
 categories = ['bb', 'bk', 'bn', 'bp', 'bq', 'br', 'empty', 'wb', 'wk', 'wn', 'wp', 'wq', 'wr']
 
 class ChessBoardSegmentation:
+
+    def __init__(self):
+        split_images_location = os.path.join(configurations.IMAGES_LOCATION, "splitimages")
+        if not os.path.exists(split_images_location):
+            print("Created split images at location provided.")
+            os.makedirs(split_images_location)
+        
+
     def auto_canny(self,image, sigma=0.33):
         """
         Canny edge detection with automatic thresholds.
@@ -221,8 +229,26 @@ class ChessBoardSegmentation:
                     cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, "splitimages", position+".jpg"), image)
         return arr
 
+    def segment_board_corners_provided(self, fname, is_file=True):
+        """
+        Given a filename or the image, segments the board.
+        """
+        start = time()
+
+        if is_file:
+            img = cv2.imread(fname)
+        else:
+            img = fname  
+
+        assert img is not None 
+
+        cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION,  'input_img.jpg'), img)
+        return self.split_board(img)     
+
 if __name__ == '__main__':
     cbs = ChessBoardSegmentation()
-    board = cbs.find_board('C:\\Users\\Sriraj\\Documents\\Boardgames\\API\\outputs\\IMG_7318.jpg', "IMG_7318")
-    cv2.imwrite('C:\\Users\\Sriraj\\Documents\\Boardgames\\API\\outputs\\IMG_7318.jpg', board)
-    cbs.split_board(board)
+    #board = cbs.find_board('C:\\Users\\Sriraj\\Documents\\Boardgames\\API\\outputs\\IMG_7318.jpg', "IMG_7318")
+    #cv2.imwrite('C:\\Users\\Sriraj\\Documents\\Boardgames\\API\\outputs\\IMG_7318.jpg', board)
+    #cbs.split_board(board)
+
+    cbs.segment_board_corners_provided("H:\\AR-ExtendingOnlineGames\\my_board\\chess_board.jpg")

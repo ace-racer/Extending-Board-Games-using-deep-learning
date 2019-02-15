@@ -21,7 +21,7 @@ class RequestProcessor:
     def process_chess_board_image(self, move_number, game_id, chess_board_image):
         
         # Step 0: Resize and perform any preprocessing on the incoming image
-        chess_board_image = utils.downsize_image(chess_board_image, configurations.REQUIRED_CHESS_BOARD_DIMENSION)
+        # chess_board_image = utils.downsize_image(chess_board_image, configurations.REQUIRED_CHESS_BOARD_DIMENSION)
 
         # Step 1: serialize the incoming image and store request object for persistence
         serialized_chess_board_image = utils.base64_encode_image(chess_board_image)
@@ -29,9 +29,7 @@ class RequestProcessor:
         self._mongo_db_provider.insert_record(request_obj, constants.request_chessboard_details_collection)
 
         # Step 2: Segment the chess board image and get a list of images
-        board = self._chess_board_segmenter.find_board(chess_board_image, is_file=False)
-        cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, "board_image_cropped.jpg"), board)
-        segmented_images = self._chess_board_segmenter.split_board(board)
+        segmented_images = self._chess_board_segmenter.segment_board_corners_provided(board, is_file=False)
         serialized_segmented_images = {x["position"]: utils.base64_encode_image(x["image"]) for x in segmented_images}
         
         # Step 3: Store the segmented images in the segmented images collection after serialization
@@ -86,11 +84,9 @@ class RequestProcessor:
 
     def segment_chess_board(self, chess_board_image):
         print(chess_board_image.shape)
-        chess_board_image = utils.downsize_image(chess_board_image, configurations.REQUIRED_CHESS_BOARD_DIMENSION)
-        print(chess_board_image.shape)
-        board = self._chess_board_segmenter.find_board(chess_board_image, "chess_board_image", is_file=False)
-        cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, "board_image_cropped.jpg"), board)
-        self._chess_board_segmenter.split_board(board)
+        # chess_board_image = utils.downsize_image(chess_board_image, configurations.REQUIRED_CHESS_BOARD_DIMENSION)
+        # print(chess_board_image.shape)
+        return self._chess_board_segmenter.segment_board_corners_provided(chess_board_image, is_file=False)
 
     def predict_piece_color_empty(self, piece_image):
         images_for_recognition = np.array([piece_image])
