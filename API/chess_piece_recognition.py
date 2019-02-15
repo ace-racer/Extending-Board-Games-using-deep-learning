@@ -16,6 +16,7 @@ import utils
 
 class ChessPieceRecognition:
     def __init__(self):
+        print("loading models...")
         self._model = None
         self._three_class_cnn_model = self.load_3_class_cnn_model()
 
