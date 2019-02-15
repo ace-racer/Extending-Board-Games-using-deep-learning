@@ -16,26 +16,8 @@ import utils
 
 class ChessPieceRecognition:
     def __init__(self):
-        # self._model = self.load_model()
         self._model = None
         self._three_class_cnn_model = self.load_3_class_cnn_model()
-
-    def load_model(self):
-        # load the model structure
-        print("Loading model for inference...")
-        inception_v3_model = InceptionV3(include_top=False)
-        x = inception_v3_model.output
-        x = GlobalAveragePooling2D()(x)
-        x = Dropout(0.25)(x)
-        x = Dense(1024, activation='relu')(x)
-        x = BatchNormalization()(x)
-        x = Dropout(0.5)(x)
-        predictions = Dense(constants.num_output_classes, activation='softmax')(x)
-        model = Model(inputs=inception_v3_model.input, outputs=predictions)
-
-        # load the model weights
-        model.load_weights(os.path.join(configurations.model_folder_name, configurations.model_name))
-        return model
 
     def load_3_class_cnn_model(self):
         """Load the 3 class CNN model for inference"""
@@ -110,12 +92,10 @@ class ChessPieceRecognition:
         print("Performing predictions for segmented images...")
         segmented_images = [x["image"] for x in segmented_images_with_positions]
         positions = [x["position"] for x in segmented_images_with_positions]
-        prepared_segmented_images = self.prepare_images(segmented_images, constants.InceptionV3_Image_Dimension)
-        preds = self._model.predict(prepared_segmented_images, batch_size=64)
-        if preds is not None:
-            return self.decode_predictions_for_segmented_images(preds, positions)
-        else:
-            return None
+
+        predicted_colors = self.predict_color_empty_for_image(segmented_images)
+        predicted_pieces = self.predict_pieces_given_colors(segmented_images, predicted_colors)
+        return dict(zip(positions, predicted_pieces))
 
     def predict_class_for_images(self, chess_piece_images):
         prepared_images = self.prepare_images(chess_piece_images, constants.InceptionV3_Image_Dimension)
@@ -147,6 +127,10 @@ class ChessPieceRecognition:
 
         predictions_str = [constants.NUMBER_TO_CATEGORY_MAPPING[x] for x in prediction_values]
         return predictions_str
+
+
+    def predict_pieces_given_colors(segmented_images, predicted_colors):
+        return [x + "P" for x in predicted_colors if x != "empty"]
 
 
 
