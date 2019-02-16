@@ -42,7 +42,7 @@ class RequestProcessor:
         # By default classify all the segmented images
         segmented_images_for_classification = segmented_images
 
-        if previous_move_number >= 0:
+        if APP_FLAGS["SEND_DELTA_ONLY"] and previous_move_number >= 0:
             print("Previous move number is {0}".format(previous_move_number))
             last_move_segmented_images_query = {"move_number": previous_move_number, "game_id": game_id}
             previous_move_segmented_images_obj = self._mongo_db_provider.retrieve_record(constants.segmented_chessboard_details_collection, last_move_segmented_images_query)
@@ -75,7 +75,7 @@ class RequestProcessor:
         if len(segmented_images_for_classification) > 0:
             # Step 6: Classify the segmented images for classification
             return self._chess_pieces_recognizer.predict_classes_for_segmented_images(segmented_images_for_classification)
-        return []
+        return {}
 
 
     def predict_piece_type(self, piece_image):
