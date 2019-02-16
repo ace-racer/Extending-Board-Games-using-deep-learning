@@ -95,8 +95,10 @@ class ChessPieceRecognition:
         positions = [x["position"] for x in segmented_images_with_positions]
 
         predicted_colors = self.predict_color_empty_for_image(segmented_images)
-        predicted_pieces = self.predict_pieces_given_colors(segmented_images, predicted_colors)
-        return dict(zip(positions, predicted_pieces))
+        assert(len(predicted_colors) == len(segmented_images))
+
+        predicted_pieces_with_positions = self.predict_pieces_given_colors(segmented_images, predicted_colors, positions)
+        return predicted_pieces_with_positions
 
     def predict_class_for_images(self, chess_piece_images):
         prepared_images = self.prepare_images(chess_piece_images, constants.InceptionV3_Image_Dimension)
@@ -130,8 +132,14 @@ class ChessPieceRecognition:
         return predictions_str
 
 
-    def predict_pieces_given_colors(self, segmented_images, predicted_colors):
-        return [x + "P" for x in predicted_colors if x != "empty"]
+    def predict_pieces_given_colors(self, segmented_images, predicted_colors, positions):
+        assert(len(predicted_colors) == len(positions))
+        details = {}
+        for itr, predicted_color_empty in enumerate(predicted_colors):
+            if predicted_color_empty != "empty":
+                details[positions[itr]] = predicted_color_empty + "P"
+
+        return details
 
 
 
