@@ -9,7 +9,7 @@ MONGO_DB_HOST="localhost"
 MONGO_DB_PORT=27017
 
 #Generated Images location
-IMAGES_LOCATION = "outputs"
+IMAGES_LOCATION = "outputs/"
 
 # Application Flags
 APP_FLAGS = {
