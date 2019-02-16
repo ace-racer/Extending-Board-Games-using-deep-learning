@@ -42,7 +42,7 @@ class RequestProcessor:
         # By default classify all the segmented images
         segmented_images_for_classification = segmented_images
 
-        if APP_FLAGS["SEND_DELTA_ONLY"] and previous_move_number >= 0:
+        if configurations.APP_FLAGS["SEND_DELTA_ONLY"] and previous_move_number >= 0:
             print("Previous move number is {0}".format(previous_move_number))
             last_move_segmented_images_query = {"move_number": previous_move_number, "game_id": game_id}
             previous_move_segmented_images_obj = self._mongo_db_provider.retrieve_record(constants.segmented_chessboard_details_collection, last_move_segmented_images_query)
