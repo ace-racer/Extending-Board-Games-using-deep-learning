@@ -222,7 +222,7 @@ class ChessBoardSegmentation:
         for i in range(8):
             for j in range(8):
                 image = img[i * sq_len : (i + 1) * sq_len, j * sq_len : (j + 1) * sq_len]
-                position = str(row[i]) + "_" + str(j+1)
+                position = str(row[j]) + "_" + str(8 - i)
                 arr.append({"image": image, "position": position})
 
                 if create_files:
