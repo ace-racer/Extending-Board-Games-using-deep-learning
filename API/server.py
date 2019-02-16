@@ -3,6 +3,7 @@ from PIL import Image
 import numpy as np
 import flask
 import io
+import cv2
 
 import constants, configurations, utils
 from requestprocessor import RequestProcessor
@@ -15,26 +16,35 @@ global redis_provider
 
 @app.route("/digitize_board", methods=["POST"])
 def digitize_chess_board():
-    # initialize the data dictionary that will be returned from the
-    # view
+    # initialize the data dictionary that will be returned from the view
     data = {"success": False}
 
     # ensure an image was properly uploaded to our endpoint
     if flask.request.method == "POST":
         if flask.request.files.get("image"):
             # read the image in PIL format
-            image = flask.request.files["image"].read()
-            image = Image.open(io.BytesIO(image))
+            image_str = flask.request.files["image"].read()
+
+            # Solution taken from https://stackoverflow.com/questions/47515243/reading-image-file-file-storage-object-using-cv2
+            # convert string data to numpy array
+            npimg = np.fromstring(image_str, np.uint8)
+
+            # convert numpy array to image
+            image = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
+
             gameid = flask.request.form["gameid"]
             move_number = flask.request.form["move_number"]
 
+            # NOTE: these values are received as strings
             print(gameid)
             print(move_number)
 
-            if gameid and move_number and image:
-                image = np.array(image)
+            if gameid and move_number:
+                # convert move number to int for processing
                 move_number = int(move_number)
+
                 print(image.shape)
+                
                 positions_with_pieces = request_processor.process_chess_board_image(move_number, gameid, image)
                 existing_boards = redis_provider.get_value_in_redis(gameid)
                 
