@@ -1,2 +1,4 @@
 .ipynb_checkpoints/
 3_class_classifier/.ipynb_checkpoints/
+siamese_classifier/logs/
+siamese_classifier/weights/
