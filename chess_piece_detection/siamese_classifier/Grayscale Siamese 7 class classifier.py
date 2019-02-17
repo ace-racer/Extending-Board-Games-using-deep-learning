@@ -103,8 +103,9 @@ convnet.add(MaxPooling2D())
 convnet.add(Conv2D(128,(4,4), kernel_initializer=W_init,kernel_regularizer=l2(2e-4),bias_initializer=b_init))
 convnet.add(BatchNormalization())
 convnet.add(Activation('relu'))
+
 convnet.add(Flatten())
-convnet.add(Dropout(0.4))
+convnet.add(Dropout(0.6))
 convnet.add(Dense(1024,activation="relu",kernel_regularizer=l2(1e-3),kernel_initializer=W_init,bias_initializer=b_init))
 
 #encode each of the two inputs into a vector with the convnet
@@ -114,8 +115,10 @@ encoded_r = convnet(right_input)
 #merge two encoded inputs with the average
 both = subtract([encoded_l,encoded_r])
 # both = K.abs(both)
-# both = Dense(256, activation='relu')(both)
+
+both = Dense(256, activation='relu')(both)
 prediction = Dense(1,activation='sigmoid',bias_initializer=b_init)(both)
+
 siamese_net = Model(inputs=[left_input,right_input],outputs=prediction)
 
 
@@ -135,8 +138,8 @@ type_locations = {"b": ["bb", "wb"], "n": ["bn", "wn"], "k": ["bk", "wk"], "p": 
 
 CHECKPOINTS_LOCATION = "weights"
 LOGS_LOCATION = "logs"
-BATCH_SIZE = 32
-NUM_EPOCHS = 50
+BATCH_SIZE = 64
+NUM_EPOCHS = 100
 
 
 if not os.path.exists(CHECKPOINTS_LOCATION):
