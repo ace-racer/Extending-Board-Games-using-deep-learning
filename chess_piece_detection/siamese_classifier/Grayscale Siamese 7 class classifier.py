@@ -36,7 +36,7 @@ def auto_canny(image, sigma=0.33):
 	# return the edged image
 	return edged
 
-def process_image(image_location):
+def process_image(image_location, params):
     """
         Given the image location, process the image
     """
@@ -52,15 +52,18 @@ def process_image(image_location):
     
     gray = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
 
-    edges = auto_canny(gray)
+    if params["invert"]:
+            gray = cv2.bitwise_not(gray)
+
+    # edges = auto_canny(gray)
     # print(edges.shape)
     
     
     # assert(denoised != edges)
-    weighted_sum = cv2.addWeighted(gray, 0.7, edges, 0.3, 0)
-    weighted_sum = weighted_sum[..., np.newaxis]
+    # weighted_sum = cv2.addWeighted(gray, 0.7, edges, 0.3, 0)
+    gray = gray[..., np.newaxis]
        
-    return weighted_sum
+    return gray
 
 
 """
@@ -151,8 +154,13 @@ def generate_paired_instances_by_ratio(folder_location, total_instances = 6000, 
             piece_type_folder = os.path.join(folder_location, folder_name)
             for f in (os.listdir(piece_type_folder)):
                 if f.endswith(".jpg"):
+                    params = { "invert": False }
+
+                    if folder_name[0] == "w":
+                        params["invert"] = True        
+       
                     img_file_loc = os.path.join(piece_type_folder, f)
-                    data.append(img_file_loc)
+                    data.append((img_file_loc, params))
                     label_values.append(type_name)
     
     num_categories = len(type_locations)
@@ -197,16 +205,16 @@ def generate_paired_instances_by_ratio(folder_location, total_instances = 6000, 
     for idx1, idx2 in pairwise_indices_same_items:
         label = 1
         
-        img1 = process_image(data[idx1])
-        img2 = process_image(data[idx2])
+        img1 = process_image(*data[idx1])
+        img2 = process_image(*data[idx2])
         
         instances_with_labels.append((img1, img2, label))
 
     for idx1, idx2 in pairwise_indices_different_items:
         label = 0
 
-        img1 = process_image(data[idx1])
-        img2 = process_image(data[idx2])
+        img1 = process_image(*data[idx1])
+        img2 = process_image(*data[idx2])
 
         instances_with_labels.append((img1, img2, label))
 
