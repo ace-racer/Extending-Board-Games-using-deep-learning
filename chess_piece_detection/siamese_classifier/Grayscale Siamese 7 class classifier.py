@@ -51,9 +51,10 @@ def process_image(image_location, params):
         resized_image = image
     
     gray = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+    gray = gray / 255.0
 
-    if params["invert"]:
-            gray = cv2.bitwise_not(gray)
+    #if params.get("invert") == True:
+    #        gray = cv2.bitwise_not(gray)
 
     # edges = auto_canny(gray)
     # print(edges.shape)
@@ -90,17 +91,17 @@ right_input = Input(input_shape)
 #build convnet to use in each siamese 'leg'
 convnet = Sequential()
 
-convnet.add(Conv2D(32,(5,5),input_shape=input_shape, kernel_initializer=W_init,kernel_regularizer=l2(2e-4)))
+convnet.add(Conv2D(32,(4,4),input_shape=input_shape, kernel_initializer=W_init,kernel_regularizer=l2(2e-4)))
 convnet.add(BatchNormalization())
 convnet.add(Activation('relu'))
 convnet.add(MaxPooling2D())
 
-convnet.add(Conv2D(64,(4,4), kernel_regularizer=l2(2e-4),kernel_initializer=W_init,bias_initializer=b_init))
+convnet.add(Conv2D(64,(3,3), kernel_regularizer=l2(2e-4),kernel_initializer=W_init,bias_initializer=b_init))
 convnet.add(BatchNormalization())
 convnet.add(Activation('relu'))
 convnet.add(MaxPooling2D())
 
-convnet.add(Conv2D(128,(4,4), kernel_initializer=W_init,kernel_regularizer=l2(2e-4),bias_initializer=b_init))
+convnet.add(Conv2D(128,(3,3), kernel_initializer=W_init,kernel_regularizer=l2(2e-4),bias_initializer=b_init))
 convnet.add(BatchNormalization())
 convnet.add(Activation('relu'))
 
