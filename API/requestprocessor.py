@@ -37,14 +37,14 @@ class RequestProcessor:
         #self._mongo_db_provider.insert_record(segmented_images_obj, constants.segmented_chessboard_details_collection)
 
         # Step 4: Retrieve the segmented images for the last move for the same game
-        previous_move_number = move_number - 1
+        previous_move_number = int(move_number) - 1
 
         # By default classify all the segmented images
         segmented_images_for_classification = segmented_images
 
         if configurations.APP_FLAGS["SEND_DELTA_ONLY"] and previous_move_number >= 0:
             print("Previous move number is {0}".format(previous_move_number))
-            last_move_segmented_images_query = {"move_number": previous_move_number, "game_id": game_id}
+            last_move_segmented_images_query = {"move_number": str(previous_move_number), "game_id": game_id}
             previous_move_segmented_images_obj = self._mongo_db_provider.retrieve_record(constants.segmented_chessboard_details_collection, last_move_segmented_images_query)
 
             if previous_move_segmented_images_obj:

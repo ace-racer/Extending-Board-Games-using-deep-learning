@@ -40,9 +40,6 @@ def digitize_chess_board():
             print(move_number)
 
             if gameid and move_number:
-                # convert move number to int for processing
-                move_number = int(move_number)
-
                 print(image.shape)
                 
                 positions_with_pieces = request_processor.process_chess_board_image(move_number, gameid, image)
@@ -61,7 +58,7 @@ def digitize_chess_board():
         else:
             data["message"] = "Chess board image not part of request..."
 
-
+    print(data)
     # return the data dictionary as a JSON response
     return flask.jsonify(data)
 
