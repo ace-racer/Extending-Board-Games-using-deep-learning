@@ -1,10 +1,4 @@
 # import the necessary packages
-from keras.applications.inception_v3 import InceptionV3
-from keras.layers import Dense, GlobalAveragePooling2D, BatchNormalization, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
-from keras.applications.inception_v3 import preprocess_input
-from keras.preprocessing import image
-from keras.models import Model, Sequential
-from keras import optimizers
 from PIL import Image
 import numpy as np
 import io
@@ -13,106 +7,24 @@ import os
 import constants
 import configurations
 import utils
+from trained_models_invoker import TrainedModelsInvoker
 
-class ChessPieceRecognition:
+class ChessPieceRecognition(TrainedModelsInvoker):
     def __init__(self):
         print("loading models...")
-        self._model = None
-        self._three_class_cnn_model = self.load_3_class_cnn_model()
-
-    def load_3_class_cnn_model(self):
-        """Load the 3 class CNN model for inference"""
-        required_input_shape = (*configurations.CHESS_BLOCK_IMAGE_SIZE, 1)
-
-        model = Sequential()
-        model.add(Conv2D(32, (3, 3), padding='valid', input_shape=required_input_shape))
-        model.add(BatchNormalization())
-        model.add(Activation('relu'))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
-        
-        model.add(Conv2D(64, (3, 3)))
-        model.add(BatchNormalization())
-        model.add(Activation('relu'))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
-        
-        model.add(Conv2D(128, (3, 3)))
-        model.add(BatchNormalization())
-        model.add(Activation('relu'))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
-        
-        model.add(Dropout(0.5))
-
-        model.add(Flatten())
-        model.add(Dense(256))
-        model.add(BatchNormalization())
-        model.add(Activation('relu'))
-        model.add(Dropout(0.6))
-        
-        model.add(Dense(3))
-        model.add(Activation('softmax'))
-        model.summary()
-
-        
-        # load the model weights
-        model.load_weights(configurations.three_class_cnn_model_location)
-                            
-        adam = optimizers.Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
-        model.compile(loss='sparse_categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
-        
-        return model
-
-
-
-    def prepare_images(self, input_images, dimensions):
-        prepared_input_images = []
-        for input_image in input_images:
-            # print("Shape: " + str(input_image.shape))
-            # basic pre-processing of the images
-            resized_input_image = utils.upsize_image(input_image, dimensions)
-            processed_image = preprocess_input(resized_input_image)
-            prepared_input_images.append(processed_image)
-        
-        prepared_input_images = np.array(prepared_input_images)
-        print(prepared_input_images.shape)
-
-        # return the prepared images
-        return prepared_input_images
-
-    def decode_predictions_for_segmented_images(self, predictions, positions):
-        # outputs a batch of predictions
-        print("Predictions...")
-        #print(predictions)
-        positions_with_predictions = {}
-        for idx, prediction in enumerate(predictions):
-            predicted_class_id = np.argmax(prediction)
-            positions_with_predictions[positions[idx]] = constants.class_names[predicted_class_id]
-
-        return positions_with_predictions
+        self._six_class_cnn_model = self.load_6_class_classifier()
+        self._three_class_cnn_model = self.load_3_class_classifier()
 
     def predict_classes_for_segmented_images(self, segmented_images_with_positions):
         print("Performing predictions for segmented images...")
         segmented_images = [x["image"] for x in segmented_images_with_positions]
         positions = [x["position"] for x in segmented_images_with_positions]
 
-        predicted_colors = self.predict_color_empty_for_image(segmented_images)
+        processed_chess_piece_images, predicted_colors = self.predict_color_empty_for_image(segmented_images)
         assert(len(predicted_colors) == len(segmented_images))
 
-        predicted_pieces_with_positions = self.predict_pieces_given_colors(segmented_images, predicted_colors, positions)
+        predicted_pieces_with_positions = self.predict_pieces_given_colors(processed_chess_piece_images, predicted_colors, positions)
         return predicted_pieces_with_positions
-
-    def predict_class_for_images(self, chess_piece_images):
-        prepared_images = self.prepare_images(chess_piece_images, constants.InceptionV3_Image_Dimension)
-        preds = self._model.predict(prepared_images, batch_size=64)
-        if preds is not None:
-            predictions_with_confidence = []
-            for pred in preds:
-                predicted_class_id = np.argmax(pred)
-                predicted_class_confidence = str(round(pred[predicted_class_id], 5))
-                predictions_with_confidence.append({"type": constants.class_names[predicted_class_id], "confidence": predicted_class_confidence})
-            
-            return predictions_with_confidence
-        else:
-            return None
 
     def predict_color_empty_for_image(self, chess_piece_images):
         processed_chess_piece_images = []
@@ -129,16 +41,22 @@ class ChessPieceRecognition:
         prediction_values = [np.argmax(x) for x in predictions]
 
         predictions_str = [constants.NUMBER_TO_CATEGORY_MAPPING[x] for x in prediction_values]
-        return predictions_str
+        return processed_chess_piece_images, predictions_str
 
 
-    def predict_pieces_given_colors(self, segmented_images, predicted_colors, positions):
+    def predict_pieces_given_colors(self, processed_chess_piece_images, predicted_colors, positions):
         assert(len(predicted_colors) == len(positions))
         details = {}
+        
+        predicted_piece_types = self._six_class_cnn_model.predict(processed_chess_piece_images, batch_size=64)
+        predicted_piece_types = [np.argmax(x) for x in predicted_piece_types]
+
         for itr, predicted_color_empty in enumerate(predicted_colors):
             if predicted_color_empty != "empty":
-                details[positions[itr]] = predicted_color_empty + "P"
+                # for the positions that are not identified as empty predict the type for the image
+                details[positions[itr]] = predicted_color_empty + constants.NUMBER_TO_CHESS_PIECE_TYPE_MAPPING[predicted_piece_types[itr]]
 
+        print(details)
         return details
 
 
