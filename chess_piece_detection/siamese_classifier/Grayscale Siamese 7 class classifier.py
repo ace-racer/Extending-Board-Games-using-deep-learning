@@ -72,16 +72,6 @@ Initial code from: https://sorenbouma.github.io/blog/oneshot/
 
 """
 
-def W_init(shape,name=None):
-    """Initialize weights as in paper"""
-    values = rng.normal(loc=0,scale=1e-2,size=shape)
-    return K.variable(values,name=name)
-
-def b_init(shape,name=None):
-    """Initialize bias as in paper"""
-    values=rng.normal(loc=0.5,scale=1e-2,size=shape)
-    return K.variable(values,name=name)
-
 input_shape = *IMAGE_SIZE, 1
 print(input_shape)
 
@@ -91,23 +81,23 @@ right_input = Input(input_shape)
 #build convnet to use in each siamese 'leg'
 convnet = Sequential()
 
-convnet.add(Conv2D(32,(4,4),input_shape=input_shape, kernel_initializer=W_init,kernel_regularizer=l2(2e-4)))
+convnet.add(Conv2D(32,(4,4),input_shape=input_shape))
 convnet.add(BatchNormalization())
 convnet.add(Activation('relu'))
 convnet.add(MaxPooling2D())
 
-convnet.add(Conv2D(64,(3,3), kernel_regularizer=l2(2e-4),kernel_initializer=W_init,bias_initializer=b_init))
+convnet.add(Conv2D(64,(3,3)))
 convnet.add(BatchNormalization())
 convnet.add(Activation('relu'))
 convnet.add(MaxPooling2D())
 
-convnet.add(Conv2D(128,(3,3), kernel_initializer=W_init,kernel_regularizer=l2(2e-4),bias_initializer=b_init))
+convnet.add(Conv2D(128,(3,3)))
 convnet.add(BatchNormalization())
 convnet.add(Activation('relu'))
 
 convnet.add(Flatten())
 convnet.add(Dropout(0.6))
-convnet.add(Dense(1024,activation="relu",kernel_regularizer=l2(1e-3),kernel_initializer=W_init,bias_initializer=b_init))
+convnet.add(Dense(1024,activation="relu"))
 
 #encode each of the two inputs into a vector with the convnet
 encoded_l = convnet(left_input)
@@ -117,8 +107,10 @@ encoded_r = convnet(right_input)
 both = subtract([encoded_l,encoded_r])
 # both = K.abs(both)
 
-both = Dense(256, activation='relu')(both)
-prediction = Dense(1,activation='sigmoid',bias_initializer=b_init)(both)
+both = Dropout(0.5)(both)
+
+both = Dense(256, activation='tanh')(both)
+prediction = Dense(1,activation='sigmoid')(both)
 
 siamese_net = Model(inputs=[left_input,right_input],outputs=prediction)
 
@@ -172,6 +164,7 @@ def generate_paired_instances_by_ratio(folder_location, total_instances = 6000, 
 
     # Get the counts of the individual labels
     label_counts = Counter(label_values)
+    print(label_counts)
     
     # Get the label indices in the original data read from the file
     label_indices = defaultdict(list)
@@ -239,7 +232,7 @@ y_train_original = []
 
 training_images = os.path.join(IMAGES_LOCATION, "train")
 
-X_train_original, y_train_original = generate_paired_instances_by_ratio(training_images, 10000)
+X_train_original, y_train_original = generate_paired_instances_by_ratio(training_images, 20000)
 
 X_train_original = np.array(X_train_original)
 y_train_original = np.array(y_train_original)
@@ -254,7 +247,7 @@ X_train = X_train_original
 y_train = y_train_original
 
 test_images = os.path.join(IMAGES_LOCATION, "test")
-X_test, y_test = generate_paired_instances_by_ratio(test_images, 2000)
+X_test, y_test = generate_paired_instances_by_ratio(test_images, 4000)
 
 X_test = np.array(X_test)
 y_test = np.array(y_test)
@@ -288,4 +281,4 @@ model = siamese_net
 X_train_instances = [X_train_left, X_train_right]
 X_test_instances = [X_test_left, X_test_right]
 
-hist = model.fit(X_train_instances, y_train, shuffle=True, batch_size=BATCH_SIZE,epochs=NUM_EPOCHS, verbose=1, validation_data=(X_test_instances, y_test), callbacks=callbacks_list)
+# hist = model.fit(X_train_instances, y_train, shuffle=True, batch_size=BATCH_SIZE,epochs=NUM_EPOCHS, verbose=1, validation_data=(X_test_instances, y_test), callbacks=callbacks_list)
