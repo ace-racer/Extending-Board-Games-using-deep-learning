@@ -1,5 +1,5 @@
-three_class_cnn_model_location = "models/3_class_cnn_95.hdf5"
-six_class_cnn_model_location = "models/6_class_cnn_65.hdf5"
+three_class_cnn_model_location = "models/3_class_cnn.hdf5"
+six_class_cnn_model_location = "models/6_class_cnn.hdf5"
 
 #Redis Configurations
 redis_host = "localhost"
