@@ -4,6 +4,7 @@ import numpy as np
 import flask
 import io
 import cv2
+from flask_cors import CORS
 
 import constants, configurations, utils
 from requestprocessor import RequestProcessor
@@ -11,6 +12,8 @@ from redisprovider import RedisProvider
 
 # initialize our Flask application and the Keras model
 app = flask.Flask(__name__)
+CORS(app)
+
 global request_processor
 global redis_provider
 
