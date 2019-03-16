@@ -14,7 +14,8 @@ IMAGES_LOCATION = "outputs/"
 
 # Application Flags
 APP_FLAGS = {
-    "SEND_DELTA_ONLY" : False
+    "SEND_DELTA_ONLY" : False,
+    "USE_MONGO": True
 }
 
 #Chess board resized image dimension

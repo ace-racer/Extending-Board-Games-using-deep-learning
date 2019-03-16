@@ -9,6 +9,7 @@ from flask_cors import CORS
 import constants, configurations, utils
 from requestprocessor import RequestProcessor
 from redisprovider import RedisProvider
+from mongodbprovider import MongoDBProvider
 
 # initialize our Flask application and the Keras model
 app = flask.Flask(__name__)
@@ -16,6 +17,7 @@ CORS(app)
 
 global request_processor
 global redis_provider
+global mongo_provider
 
 @app.route("/digitize_board", methods=["POST"])
 def digitize_chess_board():
@@ -46,7 +48,10 @@ def digitize_chess_board():
                 print(image.shape)
                 
                 positions_with_pieces = request_processor.process_chess_board_image(move_number, gameid, image)
+                mongo_provider.insert_record_with_properties(positions_with_pieces, {constants.TYPE_STR: "combined_prediction", constants.MOVE_NUMBER_STR: move_number, constants.GAME_ID_STR: gameid}, constants.LOGS_COLLECTION)
                 current_position_rules_results = request_processor.check_rules(positions_with_pieces)
+                mongo_provider.insert_record_with_properties(current_position_rules_results, {constants.TYPE_STR: "position_rules", constants.MOVE_NUMBER_STR: move_number, constants.GAME_ID_STR: gameid}, constants.LOGS_COLLECTION)
+                
                 existing_boards = redis_provider.get_value_in_redis(gameid)
                 
                 # create the existing boards if they do not exist in Redis
@@ -128,9 +133,14 @@ def segment_board():
 
     return flask.jsonify(data)
 
+@app.route("/add_actual_move", methods=["POST"])
+def add_actual_move():
+    pass
+
 # if this is the main thread of execution first load the model and
 # then start the server
 if __name__ == "__main__":
     request_processor = RequestProcessor()
     redis_provider = RedisProvider()
+    mongo_provider = MongoDBProvider()
     app.run(debug=True, use_reloader=False)

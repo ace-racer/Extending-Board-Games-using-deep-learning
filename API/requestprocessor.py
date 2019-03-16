@@ -97,6 +97,7 @@ class RequestProcessor:
     def check_rules(self, board_configuration):
         return self._rules_checker.check_piece_numbers(board_configuration)
 
+
         
 
 
