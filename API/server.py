@@ -138,8 +138,8 @@ def segment_board():
 def add_actual_move():
     request_content = request.json
     mongo_provider.insert_record_with_properties(request_content, {constants.TYPE_STR: "actual_move"}, constants.LOGS_COLLECTION)
-    return True
-
+    data = {"success": True}
+    return flask.jsonify(data)
 
 
 # if this is the main thread of execution first load the model and
