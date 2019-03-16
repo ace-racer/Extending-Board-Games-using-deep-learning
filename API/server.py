@@ -46,6 +46,7 @@ def digitize_chess_board():
                 print(image.shape)
                 
                 positions_with_pieces = request_processor.process_chess_board_image(move_number, gameid, image)
+                current_position_rules_results = request_processor.check_rules(positions_with_pieces)
                 existing_boards = redis_provider.get_value_in_redis(gameid)
                 
                 # create the existing boards if they do not exist in Redis
@@ -56,6 +57,10 @@ def digitize_chess_board():
                 
                 data["board"] = existing_boards
                 data["success"] = True
+
+                if current_position_rules_results:
+                    data["rules_violated"] = current_position_rules_results[0]
+                    data["rules_violated_details"] = current_position_rules_results[1]
             else:
                 data["message"] = "Game Id and move number are mandatory for the request..."
         else:

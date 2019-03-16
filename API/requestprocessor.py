@@ -2,6 +2,7 @@ from redisprovider import RedisProvider
 from mongodbprovider import MongoDBProvider
 from chess_board_segmentation import ChessBoardSegmentation
 from chess_piece_recognition import ChessPieceRecognition
+from ruleschecker import RulesChecker
 import utils
 import constants
 import configurations
@@ -16,6 +17,7 @@ class RequestProcessor:
         self._redis_provider = RedisProvider()
         self._chess_pieces_recognizer = ChessPieceRecognition()
         self._chess_board_segmenter = ChessBoardSegmentation()
+        self._rules_checker = RulesChecker()
 
 
     def process_chess_board_image(self, move_number, game_id, chess_board_image):
@@ -91,6 +93,9 @@ class RequestProcessor:
     def predict_piece_color_empty(self, piece_image):
         images_for_recognition = np.array([piece_image])
         return self._chess_pieces_recognizer.predict_color_empty_for_image(images_for_recognition)
+
+    def check_rules(self, board_configuration):
+        return self._rules_checker.check_piece_numbers(board_configuration)
 
         
 
