@@ -2,6 +2,7 @@ from pymongo import MongoClient
 import configurations
 import constants
 import json
+import copy
 
 class MongoDBProvider:
     def __init__(self):
@@ -16,7 +17,7 @@ class MongoDBProvider:
     
     def insert_record_with_properties(self, record, additional_properties, collection_name):
         if self._use_mongo_db and record and additional_properties:
-            record_to_insert = record
+            record_to_insert = copy.deepcopy(record)
             for k in additional_properties:
                 if k not in record_to_insert:
                     record_to_insert[k] = additional_properties[k]

@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import os, glob, skimage, cv2, shutil
 from scipy.spatial.distance import cdist
 import os
+from mongodbprovider import MongoDBProvider
 
 import configurations
 
@@ -17,7 +18,8 @@ categories = ['bb', 'bk', 'bn', 'bp', 'bq', 'br', 'empty', 'wb', 'wk', 'wn', 'wp
 
 class ChessBoardSegmentation:
 
-    def __init__(self):
+    def __init__(self, mongo_db_provider = None):
+        self._mongo_db_provider = mongo_db_provider
         split_images_location = os.path.join(configurations.IMAGES_LOCATION, "splitimages")
         if not os.path.exists(split_images_location):
             print("Created split images at location provided.")

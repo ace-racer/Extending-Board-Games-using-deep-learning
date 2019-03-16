@@ -5,6 +5,7 @@ import flask
 import io
 import cv2
 from flask_cors import CORS
+from flask import request
 
 import constants, configurations, utils
 from requestprocessor import RequestProcessor
@@ -50,7 +51,7 @@ def digitize_chess_board():
                 positions_with_pieces = request_processor.process_chess_board_image(move_number, gameid, image)
                 mongo_provider.insert_record_with_properties(positions_with_pieces, {constants.TYPE_STR: "combined_prediction", constants.MOVE_NUMBER_STR: move_number, constants.GAME_ID_STR: gameid}, constants.LOGS_COLLECTION)
                 current_position_rules_results = request_processor.check_rules(positions_with_pieces)
-                mongo_provider.insert_record_with_properties(current_position_rules_results, {constants.TYPE_STR: "position_rules", constants.MOVE_NUMBER_STR: move_number, constants.GAME_ID_STR: gameid}, constants.LOGS_COLLECTION)
+                mongo_provider.insert_record_with_properties({"rules_violated": current_position_rules_results[0], "rules_violated_details": current_position_rules_results[1]}, {constants.TYPE_STR: "position_rules", constants.MOVE_NUMBER_STR: move_number, constants.GAME_ID_STR: gameid}, constants.LOGS_COLLECTION)
                 
                 existing_boards = redis_provider.get_value_in_redis(gameid)
                 
@@ -135,12 +136,16 @@ def segment_board():
 
 @app.route("/add_actual_move", methods=["POST"])
 def add_actual_move():
-    pass
+    request_content = request.json
+    mongo_provider.insert_record_with_properties(request_content, {constants.TYPE_STR: "actual_move"}, constants.LOGS_COLLECTION)
+    return True
+
+
 
 # if this is the main thread of execution first load the model and
 # then start the server
 if __name__ == "__main__":
-    request_processor = RequestProcessor()
     redis_provider = RedisProvider()
     mongo_provider = MongoDBProvider()
+    request_processor = RequestProcessor(mongo_provider)
     app.run(debug=True, use_reloader=False)

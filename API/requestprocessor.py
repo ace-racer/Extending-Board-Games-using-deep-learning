@@ -12,11 +12,11 @@ import numpy as np
 import os
 
 class RequestProcessor:
-    def __init__(self):
-        self._mongo_db_provider = MongoDBProvider()
+    def __init__(self, mongo_db_provider = None):
+        self._mongo_db_provider = mongo_db_provider
         self._redis_provider = RedisProvider()
-        self._chess_pieces_recognizer = ChessPieceRecognition()
-        self._chess_board_segmenter = ChessBoardSegmentation()
+        self._chess_pieces_recognizer = ChessPieceRecognition(mongo_db_provider)
+        self._chess_board_segmenter = ChessBoardSegmentation(mongo_db_provider)
         self._rules_checker = RulesChecker()
 
 
@@ -76,7 +76,7 @@ class RequestProcessor:
         # perform detection only if the segmented images list is not empty
         if len(segmented_images_for_classification) > 0:
             # Step 6: Classify the segmented images for classification
-            return self._chess_pieces_recognizer.predict_classes_for_segmented_images(segmented_images_for_classification)
+            return self._chess_pieces_recognizer.predict_classes_for_segmented_images(segmented_images_for_classification, move_number, game_id)
         return {}
 
 
