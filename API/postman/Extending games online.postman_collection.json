@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "5f3639db-3a0e-4665-af51-1ba96d6fd44b",
+		"_postman_id": "416d83e3-1f58-48eb-842c-74495ec89fbf",
 		"name": "Extending games online",
 		"description": "Extending games online. Contains the APIs for chess piece identification and other APIs.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -17,7 +17,8 @@
 						{
 							"key": "image",
 							"type": "file",
-							"src": ""
+							"src": "",
+							"value": ""
 						}
 					]
 				},
@@ -54,12 +55,12 @@
 						},
 						{
 							"key": "gameid",
-							"value": "TD125",
+							"value": "TD161",
 							"type": "text"
 						},
 						{
 							"key": "move_number",
-							"value": "2",
+							"value": "1",
 							"type": "text"
 						}
 					]
@@ -92,7 +93,8 @@
 						{
 							"key": "image",
 							"type": "file",
-							"src": ""
+							"src": "",
+							"value": ""
 						}
 					]
 				},
@@ -125,7 +127,8 @@
 						{
 							"key": "image",
 							"type": "file",
-							"src": ""
+							"src": "",
+							"value": ""
 						}
 					]
 				},
@@ -144,6 +147,38 @@
 					]
 				},
 				"description": "Predict the color of the piece or if the position is empty"
+			},
+			"response": []
+		},
+		{
+			"name": "http://127.0.0.1:5000/add_actual_move",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"move_number\": \"3\",\n\t\"game_id\": \"TD161\",\n\t\"f7\" : \"bB\",\n    \"a6\" : \"bR\",\n    \"c6\" : \"wP\",\n    \"d5\" : \"wN\",\n    \"f5\" : \"wQ\",\n    \"b4\" : \"wQ\",\n    \"f4\" : \"wP\",\n    \"a3\" : \"wN\",\n    \"c3\" : \"wP\",\n    \"e3\" : \"wP\",\n    \"d2\" : \"wP\",\n    \"h2\" : \"wN\",\n    \"d1\" : \"wR\"\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/add_actual_move",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"add_actual_move"
+					]
+				},
+				"description": "Add an actual move\n"
 			},
 			"response": []
 		}
