@@ -141,6 +141,22 @@ def add_actual_move():
     data = {"success": True}
     return flask.jsonify(data)
 
+@app.route("/get_logs", methods=["GET"])
+def get_logs():
+    # get the game ID from the query string
+    game_id = request.args.get("gameid")
+    print(game_id)
+    data = { "success": False }
+    log_details = "GameId not present in request"
+
+    if game_id:
+        data["success"] = True
+        log_details = mongo_provider.retrieve_all_records(constants.LOGS_COLLECTION, {constants.GAME_ID_STR: game_id})
+        #log_details.pop("_id", None)
+
+    data["details"] = log_details
+    return flask.jsonify(data)
+
 
 # if this is the main thread of execution first load the model and
 # then start the server

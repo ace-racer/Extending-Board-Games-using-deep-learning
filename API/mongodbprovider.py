@@ -38,6 +38,13 @@ class MongoDBProvider:
         else:
             print("Not connected to MongoDB, so cannot retrieve values. Check APP_FLAGS in configuration.")
 
+    def retrieve_all_records(self,collection_name, query_obj):
+        if query_obj and self._use_mongo_db:
+            return self._database[collection_name].find(query_obj)
+        else:
+            print("Not connected to MongoDB, so cannot retrieve values. Check APP_FLAGS in configuration.")
+
+
 if __name__ == '__main__':
     mongodbprovider=MongoDBProvider()
     doc={"piece": "wk", "position": "h5"}
