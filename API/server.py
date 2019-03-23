@@ -152,7 +152,6 @@ def get_logs():
     if game_id:
         data["success"] = True
         log_details = mongo_provider.retrieve_all_records(constants.LOGS_COLLECTION, {constants.GAME_ID_STR: game_id})
-        #log_details.pop("_id", None)
 
     data["details"] = log_details
     return flask.jsonify(data)

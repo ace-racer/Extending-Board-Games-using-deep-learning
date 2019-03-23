@@ -34,13 +34,21 @@ class MongoDBProvider:
 
     def retrieve_record(self,collection_name, query_obj):
         if query_obj and self._use_mongo_db:
-            return self._database[collection_name].find_one(query_obj)
+            record = self._database[collection_name].find_one(query_obj)
+            record.pop("_id")
+            return record
         else:
             print("Not connected to MongoDB, so cannot retrieve values. Check APP_FLAGS in configuration.")
 
     def retrieve_all_records(self,collection_name, query_obj):
         if query_obj and self._use_mongo_db:
-            return self._database[collection_name].find(query_obj)
+            retrieved_records = self._database[collection_name].find(query_obj)
+            required_records = []
+            for record in retrieved_records:
+                record.pop("_id")
+                required_records.append(record)
+
+            return required_records
         else:
             print("Not connected to MongoDB, so cannot retrieve values. Check APP_FLAGS in configuration.")
 
