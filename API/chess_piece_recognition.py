@@ -24,7 +24,7 @@ class ChessPieceRecognition(TrainedModelsInvoker):
 
         processed_chess_piece_images, predicted_colors = self.predict_color_empty_for_image(segmented_images)
         assert(len(predicted_colors) == len(segmented_images))
-        self._mongo_db_provider.insert_record_with_properties({"predicted_colors": predicted_colors}, {constants.TYPE_STR: "color_empty_prediction", constants.MOVE_NUMBER_STR: move_number, constants.GAME_ID_STR: game_id}, constants.LOGS_COLLECTION)
+        self._mongo_db_provider.insert_record_with_properties({"predicted_colors": predicted_colors}, {constants.SEQUENCE_NUM_STR: 3, constants.TYPE_STR: "color_empty_prediction", constants.MOVE_NUMBER_STR: move_number, constants.GAME_ID_STR: game_id}, constants.LOGS_COLLECTION)
 
         predicted_pieces_with_positions = self.predict_pieces_given_colors(processed_chess_piece_images, predicted_colors, positions)
         return predicted_pieces_with_positions
