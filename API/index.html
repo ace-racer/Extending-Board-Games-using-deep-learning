@@ -3,10 +3,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     
    <body>
-      <form method = "get" onsubmit="showLogs()">
          <p>Enter Game Id:</p>
          <p><input type = "text" id = "gameid" /></p>
-      </form>
+         <p><input type="button" onclick="showLogs()" value="Show Logs"/></p>
+         <p id ="results"></p>
    </body>
    <script>
         function showLogs(){
@@ -14,7 +14,22 @@
             
             $.get("http://127.0.0.1:5000/get_logs?gameid=" + gameid,
             function( data ) {
-                alert(data);
+                if(data && data.details)
+                {
+                    num_details = data.details.length;
+                    data.details.sort(function(a, b){
+                        return a["sequence_number"] - b["sequence_number"];   
+                    }).sort(function(a, b){
+                        return a["move_number"] - b["move_number"];   
+                    });
+                    details = "<table>";
+                    for(var i = 0; i < num_details; i++){
+                        details += "<tr><td>" +  data.details[i]["move_number"] + "</td><td>" + data.details[i]["sequence_number"] + "</td><td>" + data.details[i]["type"] + "</td>" + "</tr>";
+                    }
+
+                    details += "</table>";
+                    $("#results").html(details);
+                }
             });}
     </script>
 </html>
