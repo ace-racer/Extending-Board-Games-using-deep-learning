@@ -23,6 +23,7 @@
                         return a["move_number"] - b["move_number"];   
                     });
                     details = "<table>";
+                    details += "<tr><th>Move number</th><th>Sequence number</th><th>Type</th></tr>";
                     for(var i = 0; i < num_details; i++){
                         details += "<tr><td>" +  data.details[i]["move_number"] + "</td><td>" + data.details[i]["sequence_number"] + "</td><td>" + data.details[i]["type"] + "</td>" + "</tr>";
                     }
