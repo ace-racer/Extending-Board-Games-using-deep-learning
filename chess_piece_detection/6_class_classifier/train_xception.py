@@ -108,9 +108,12 @@ if not os.path.exists(tensorboard_logs_folder_location):
     os.makedirs(tensorboard_logs_folder_location)
 
 def get_xception_model():
-    base_model = Xception(include_top=False, weights='imagenet', input_tensor=None, input_shape=(*IMAGE_SIZE, 3), pooling='max')
+    base_model = Xception(include_top=False, weights='imagenet', input_shape=required_input_shape)
     # add a global spatial average pooling layer
+
+    print("Shape")
     x = base_model.output
+    print(x.shape)
 
     x = GlobalAveragePooling2D()(x)
 
