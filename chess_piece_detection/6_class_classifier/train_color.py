@@ -58,11 +58,10 @@ def get_features_labels(data_path):
 
                     img_file_loc = os.path.join(piece_type_folder, f)
                     print(img_file_loc)
-                    grayscale_image = process_image(img_file_loc)
-                    actual_image = grayscale_image
-                    grayscale_image = grayscale_image[..., np.newaxis]
+                    processed_image = process_image(img_file_loc)
+                    actual_image = processed_image
                     label = type_name_to_label[type_name]
-                    features_with_labels.append({"feature": grayscale_image, "label": label, "image": actual_image})   
+                    features_with_labels.append({"feature": processed_image, "label": label, "image": actual_image})   
                     
     random.shuffle(features_with_labels)
     #print(X[0][0])
