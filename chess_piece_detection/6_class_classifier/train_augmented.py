@@ -129,8 +129,8 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer=adam, metrics=['
 
 model.fit_generator(
         train_generator,
-        steps_per_epoch=2000 // batch_size,
+        steps_per_epoch=15000 // batch_size,
         epochs=500,
         validation_data=validation_generator,
-        validation_steps=800 // batch_size,
+        validation_steps=1000 // batch_size,
         callbacks=callbacks_list)
