@@ -45,14 +45,14 @@ batch_size = 64
 # subfolers of 'data/train', and indefinitely generate
 # batches of augmented image data
 train_generator = train_datagen.flow_from_directory(
-        'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\train1',  # this is the target directory
+        'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\\combined_data\\train1',  # this is the target directory
         target_size=IMAGE_SIZE,  
         batch_size=batch_size,
         class_mode='sparse')  
 
 # this is a similar generator, for validation data
 validation_generator = test_datagen.flow_from_directory(
-        'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\test1',
+        'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\\combined_data\\test1',
         target_size=IMAGE_SIZE,
         batch_size=batch_size,
         class_mode='sparse')
