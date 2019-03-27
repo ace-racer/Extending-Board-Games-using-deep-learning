@@ -120,7 +120,7 @@ tensorboard = TensorBoard(log_dir=tensorboard_logs_folder_location, histogram_fr
 
 callbacks_list = [checkpoint, earlystop, tensorboard]
 
-adam = Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
 xception_model.compile(loss='sparse_categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
 xception_model.fit_generator(
@@ -150,7 +150,7 @@ for layer in xception_model.layers[106:]:
 # we need to recompile the model for these modifications to take effect
 # we use SGD with a low learning rate
 from keras.optimizers import SGD
-xception_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='sparse_categorical_crossentropy')
+xception_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 train_generator1 = train_datagen.flow_from_directory(
         'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\combined_data\\train1',  # this is the target directory
