@@ -64,8 +64,8 @@ validation_generator = test_datagen.flow_from_directory(
 
 
 # number of training epochs
-epochs1 = 500
-epochs2 = 200
+epochs1 = 5
+epochs2 = 2
 
 required_input_shape = (*IMAGE_SIZE, 3)
 
@@ -123,13 +123,13 @@ callbacks_list = [checkpoint, earlystop, tensorboard]
 adam = Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
 xception_model.compile(loss='sparse_categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
-# xception_model.fit_generator(
-#         train_generator,
-#         steps_per_epoch=TOTAL_TRAIN_IMAGES // batch_size,
-#         epochs=epochs1,
-#         validation_data=validation_generator,
-#         validation_steps=TOTAL_TEST_IMAGES // batch_size,
-#         callbacks=callbacks_list)
+xception_model.fit_generator(
+        train_generator,
+        steps_per_epoch=TOTAL_TRAIN_IMAGES // batch_size,
+        epochs=epochs1,
+        validation_data=validation_generator,
+        validation_steps=TOTAL_TEST_IMAGES // batch_size,
+        callbacks=callbacks_list)
 
 # at this point, the top layers are well trained and we can start fine-tuning
 # convolutional layers from inception V3. We will freeze the bottom N layers
@@ -137,26 +137,26 @@ xception_model.compile(loss='sparse_categorical_crossentropy', optimizer=adam, m
 
 # let's visualize layer names and layer indices to see how many layers
 # we should freeze:
-for i, layer in enumerate(xception_model.layers):
-   print(i, layer.name)
+#for i, layer in enumerate(xception_model.layers):
+#   print(i, layer.name)
 
 # we chose to train the top 2 inception blocks, i.e. we will freeze
-# the first 249 layers and unfreeze the rest:
-# for layer in model.layers[:249]:
-#    layer.trainable = False
-# for layer in model.layers[249:]:
-#    layer.trainable = True
+# the first 105 layers and unfreeze the rest:
+for layer in xception_model.layers[:106]:
+   layer.trainable = False
+for layer in xception_model.layers[106:]:
+   layer.trainable = True
 
-# # we need to recompile the model for these modifications to take effect
-# # we use SGD with a low learning rate
-# from keras.optimizers import SGD
-# model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy')
+# we need to recompile the model for these modifications to take effect
+# we use SGD with a low learning rate
+from keras.optimizers import SGD
+xception_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='sparse_categorical_crossentropy')
 
-# # we train our model again (this time fine-tuning the top 2 inception blocks
-# # alongside the top Dense layers
-# model.fit_generator(        train_generator,
-#         steps_per_epoch=TOTAL_TRAIN_IMAGES // batch_size,
-#         epochs=epochs2,
-#         validation_data=validation_generator,
-#         validation_steps=TOTAL_TEST_IMAGES // batch_size,
-#         callbacks=callbacks_list)
+# we train our model again (this time fine-tuning the top 2 inception blocks
+# alongside the top Dense layers
+xception_model.fit_generator(train_generator,
+        steps_per_epoch=TOTAL_TRAIN_IMAGES // batch_size,
+        epochs=epochs2,
+        validation_data=validation_generator,
+        validation_steps=TOTAL_TEST_IMAGES // batch_size,
+        callbacks=callbacks_list)
