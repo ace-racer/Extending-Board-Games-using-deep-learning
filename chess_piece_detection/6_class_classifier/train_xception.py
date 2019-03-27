@@ -64,8 +64,8 @@ validation_generator = test_datagen.flow_from_directory(
 
 
 # number of training epochs
-epochs1 = 1
-epochs2 = 1
+epochs1 = 500
+epochs2 = 500
 
 required_input_shape = (*IMAGE_SIZE, 3)
 
@@ -152,26 +152,11 @@ for layer in xception_model.layers[106:]:
 from keras.optimizers import SGD
 xception_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-train_generator1 = train_datagen.flow_from_directory(
-        'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\combined_data\\train1',  # this is the target directory
-        target_size=IMAGE_SIZE,  
-        batch_size=batch_size,
-        class_mode='sparse')  
-
-# this is a similar generator, for validation data
-validation_generator1 = test_datagen.flow_from_directory(
-        'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\combined_data\\test1',
-        target_size=IMAGE_SIZE,
-        batch_size=batch_size,
-        class_mode='sparse')
-
-callbacks_list1 = [checkpoint, earlystop, tensorboard]
-
 # we train our model again (this time fine-tuning the top 2 inception blocks
 # alongside the top Dense layers
-xception_model.fit_generator(train_generator1,
+xception_model.fit_generator(train_generator,
         steps_per_epoch=TOTAL_TRAIN_IMAGES // batch_size,
         epochs=epochs2,
-        validation_data=validation_generator1,
+        validation_data=validation_generator,
         validation_steps=TOTAL_TEST_IMAGES // batch_size,
-        callbacks=callbacks_list1)
+        callbacks=callbacks_list)
