@@ -20,10 +20,6 @@ class ChessBoardSegmentation:
 
     def __init__(self, mongo_db_provider = None):
         self._mongo_db_provider = mongo_db_provider
-        split_images_location = os.path.join(configurations.IMAGES_LOCATION, "splitimages")
-        if not os.path.exists(split_images_location):
-            print("Created split images at location provided.")
-            os.makedirs(split_images_location)
         
 
     def auto_canny(self,image, sigma=0.33):
@@ -214,7 +210,7 @@ class ChessBoardSegmentation:
 
         return new_img
 
-    def split_board(self, img, create_files=True):
+    def split_board(self, img, complete_folder_location, create_files=True):
         """
         Given a board image, returns an array of 64 smaller images.
         """
@@ -228,10 +224,10 @@ class ChessBoardSegmentation:
                 arr.append({"image": image, "position": position})
 
                 if create_files:
-                    cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION, "splitimages", position+".jpg"), image)
+                    cv2.imwrite(os.path.join(complete_folder_location, position+".jpg"), image)
         return arr
 
-    def segment_board_corners_provided(self, fname, is_file=True):
+    def segment_board_corners_provided(self, game_id, move_number, fname, is_file=True):
         """
         Given a filename or the image, segments the board.
         """
@@ -244,8 +240,16 @@ class ChessBoardSegmentation:
 
         assert img is not None 
 
-        cv2.imwrite(os.path.join(configurations.IMAGES_LOCATION,  'input_img.jpg'), img)
-        return self.split_board(img)     
+        folder_name = str(game_id) + "_" + str(move_number)
+        complete_folder_location = os.path.join(configurations.IMAGES_LOCATION, folder_name)
+        if not os.path.exists(complete_folder_location):
+            os.makedirs(complete_folder_location)
+
+        # create the image of the board
+        cv2.imwrite(os.path.join(complete_folder_location,  'board.jpg'), img)
+
+        # split the board into multiple images for the squares
+        return self.split_board(img, complete_folder_location)     
 
 if __name__ == '__main__':
     cbs = ChessBoardSegmentation()

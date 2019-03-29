@@ -31,7 +31,7 @@ class RequestProcessor:
         #self._mongo_db_provider.insert_record(request_obj, constants.request_chessboard_details_collection)
 
         # Step 2: Segment the chess board image and get a list of images
-        segmented_images = self._chess_board_segmenter.segment_board_corners_provided(chess_board_image, is_file=False)
+        segmented_images = self._chess_board_segmenter.segment_board_corners_provided(game_id, move_number, chess_board_image, is_file=False)
         serialized_segmented_images = {x["position"]: utils.base64_encode_image(x["image"]) for x in segmented_images}
         
         # Step 3: Store the segmented images in the segmented images collection after serialization
