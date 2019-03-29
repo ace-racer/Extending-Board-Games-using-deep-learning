@@ -113,12 +113,7 @@ def auto_canny(image, sigma=0.33):
 
 def process_image_three_class_cnn(image):
     
-    if image.shape[0] != configurations.CHESS_BLOCK_IMAGE_SIZE[0] or image.shape[1] != configurations.CHESS_BLOCK_IMAGE_SIZE[1]:
-        # print("Resizing the image: {0}".format(image_location))
-        resized_image = cv2.resize(image, configurations.CHESS_BLOCK_IMAGE_SIZE, interpolation = cv2.INTER_AREA)
-    else:
-        resized_image = image
-    
+    resized_image = resize_given_image(image, configurations.CHESS_BLOCK_IMAGE_SIZE)
     gray = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
     edges = auto_canny(gray)
     #print(edges.shape)
@@ -128,3 +123,12 @@ def process_image_three_class_cnn(image):
     weighted_sum = cv2.addWeighted(gray, 0.8, edges, 0.2, 0)
        
     return weighted_sum
+
+def resize_given_image(image, dims):
+    if image.shape[0] != dims[0]  or image.shape[1] != dims[1]:
+        # dimension is reduced here
+        resized_image = cv2.resize(image, dims, interpolation = cv2.INTER_AREA)
+    else:
+        resized_image = image
+
+    return resized_image

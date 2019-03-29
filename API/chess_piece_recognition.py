@@ -22,11 +22,11 @@ class ChessPieceRecognition(TrainedModelsInvoker):
         segmented_images = [x["image"] for x in segmented_images_with_positions]
         positions = [x["position"] for x in segmented_images_with_positions]
 
-        processed_chess_piece_images, predicted_colors = self.predict_color_empty_for_image(segmented_images)
+        predicted_colors = self.predict_color_empty_for_image(segmented_images)
         assert(len(predicted_colors) == len(segmented_images))
         self._mongo_db_provider.insert_record_with_properties({"predicted_colors": predicted_colors}, {constants.SEQUENCE_NUM_STR: 1, constants.TYPE_STR: "color_empty_prediction", constants.MOVE_NUMBER_STR: move_number, constants.GAME_ID_STR: game_id}, constants.LOGS_COLLECTION)
 
-        predicted_pieces_with_positions = self.predict_pieces_given_colors(processed_chess_piece_images, predicted_colors, positions)
+        predicted_pieces_with_positions = self.predict_pieces_given_colors(segmented_images, predicted_colors, positions)
         return predicted_pieces_with_positions
 
     def predict_color_empty_for_image(self, chess_piece_images):
@@ -44,13 +44,14 @@ class ChessPieceRecognition(TrainedModelsInvoker):
         prediction_values = [np.argmax(x) for x in predictions]
 
         predictions_str = [constants.NUMBER_TO_CATEGORY_MAPPING[x] for x in prediction_values]
-        return processed_chess_piece_images, predictions_str
+        return predictions_str
 
 
-    def predict_pieces_given_colors(self, processed_chess_piece_images, predicted_colors, positions):
+    def predict_pieces_given_colors(self, chess_piece_images, predicted_colors, positions):
         assert(len(predicted_colors) == len(positions))
         details = {}
         
+        processed_chess_piece_images = self.process_images_for_prediction(chess_piece_images)
         predicted_piece_types = self._six_class_cnn_model.predict(processed_chess_piece_images, batch_size=64)
         predicted_piece_types = [np.argmax(x) for x in predicted_piece_types]
 
