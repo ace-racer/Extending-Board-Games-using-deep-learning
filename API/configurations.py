@@ -1,6 +1,7 @@
 three_class_cnn_model_location = "models/3_class_cnn.hdf5"
 six_class_cnn_model_location = "models/6_class_cnn.hdf5"
 six_class_xception_model_location = "models/6_class_xception.hdf5"
+six_class_color_cnn_model_location = "models/6_class_color_cnn.hdf5"
 
 #Redis Configurations
 redis_host = "localhost"
@@ -26,4 +27,4 @@ REQUIRED_CHESS_BOARD_DIMENSION = (835, 817)
 CHESS_BLOCK_IMAGE_SIZE = (70, 70)
 
 # name of the 6 class classifier model to use
-SIX_CLASS_MODEL_TO_USE = "xception"
+SIX_CLASS_MODEL_TO_USE = "color_cnn"
