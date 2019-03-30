@@ -22,7 +22,7 @@ from keras.losses import binary_crossentropy
 from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 import numpy.random as rng
 
-IMAGE_SIZE = (70, 70)
+IMAGE_SIZE = (100, 100)
 
 
 def process_image(image_location):
@@ -77,7 +77,7 @@ def get_features_labels(data_path):
     return X, np.array(y), images
 
 
-X_train, y_train, _ = get_features_labels("C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\train")
+X_train, y_train, _ = get_features_labels("C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\train_mixed")
 X_test, y_test, test_images = get_features_labels("C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\sriraj_v2\\test")
 print(X_train.shape)
 print(y_train.shape)
@@ -86,7 +86,7 @@ print(y_test.shape)
 
 
 # batch size
-batch_size = 64
+batch_size = 32
 
 
 # number of training epochs
@@ -94,8 +94,8 @@ epochs = 500
 
 required_input_shape = (*IMAGE_SIZE, 3)
 
-model_folder_name = "fine_tune/models"
-tensorboard_logs_folder_location = "fine_tune/logs"
+model_folder_name = "models"
+tensorboard_logs_folder_location = "logs"
 
 
 def get_6_class_cnn_model_structure():
