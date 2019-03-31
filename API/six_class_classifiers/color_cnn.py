@@ -1,6 +1,4 @@
-from keras.applications.inception_v3 import InceptionV3
 from keras.layers import Dense, GlobalAveragePooling2D, BatchNormalization, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
-from keras.applications.inception_v3 import preprocess_input
 from keras.preprocessing import image
 from keras.models import Model, Sequential
 from keras import optimizers
@@ -10,12 +8,15 @@ import configurations
 import constants
 import utils
 
+IMAGE_DIMS = (100, 100)
+IMAGE_NUM_CHANNELS = 3
+
 def load_6_class_classifier():
     """
         Load the 6 class classifer model to infer the type of the chess piece
     """
 
-    required_input_shape = (*configurations.CHESS_BLOCK_IMAGE_SIZE, 3)
+    required_input_shape = (*IMAGE_DIMS, IMAGE_NUM_CHANNELS)
 
     model = Sequential()
     model.add(Conv2D(32, (3, 3), padding='valid', input_shape=required_input_shape))
@@ -65,7 +66,7 @@ def process_images_for_prediction(chess_piece_images):
     """Process the image as required by the color CNN model"""
     processed_chess_piece_images = []
     for chess_piece_image in chess_piece_images:
-        processed_chess_piece_image = utils.resize_given_image(chess_piece_image, configurations.CHESS_BLOCK_IMAGE_SIZE)
+        processed_chess_piece_image = utils.resize_given_image(chess_piece_image, IMAGE_DIMS)
         processed_chess_piece_images.append(processed_chess_piece_image)
 
     processed_chess_piece_images = np.array(processed_chess_piece_images)
