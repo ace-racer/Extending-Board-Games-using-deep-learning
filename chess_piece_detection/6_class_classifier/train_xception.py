@@ -24,9 +24,9 @@ import numpy.random as rng
 from keras.applications.xception import Xception
 
 
-IMAGE_SIZE = (80, 80)
+IMAGE_SIZE = (100, 100)
 TOTAL_TRAIN_IMAGES = 10000
-TOTAL_TEST_IMAGES = 1000
+TOTAL_TEST_IMAGES = 300
 
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 train_datagen = ImageDataGenerator(
@@ -44,20 +44,20 @@ test_datagen = ImageDataGenerator(rescale=1./255)
 
 
 # batch size
-batch_size = 64
+batch_size = 32
 
 # this is a generator that will read pictures found in
 # subfolers of 'data/train', and indefinitely generate
 # batches of augmented image data
 train_generator = train_datagen.flow_from_directory(
-        'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\combined_data\\train1',  # this is the target directory
-        target_size=IMAGE_SIZE,  
+        'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\\six_class_data\\v1\\train',  # this is the target directory
+        target_size=IMAGE_SIZE,
         batch_size=batch_size,
-        class_mode='sparse')  
+        class_mode='sparse')
 
 # this is a similar generator, for validation data
 validation_generator = test_datagen.flow_from_directory(
-        'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\combined_data\\test1',
+        'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\\six_class_data\\v1\\test',
         target_size=IMAGE_SIZE,
         batch_size=batch_size,
         class_mode='sparse')
@@ -103,7 +103,7 @@ def get_xception_model():
     # i.e. freeze all convolutional InceptionV3 layers
     for layer in base_model.layers:
         layer.trainable = False
-    
+
     return model
 
 
@@ -120,7 +120,7 @@ tensorboard = TensorBoard(log_dir=tensorboard_logs_folder_location, histogram_fr
 
 callbacks_list = [checkpoint, earlystop, tensorboard]
 
-adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+adam = Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
 xception_model.compile(loss='sparse_categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
 xception_model.fit_generator(
