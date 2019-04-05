@@ -35,7 +35,8 @@ class PrintConfusionMatrix(keras.callbacks.Callback):
         if epoch % 5 == 0:
             # get the predictions providing the X for the validation data
             y_pred = self.model.predict(self.validation_data[0])
-            print(confusion_matrix(self.validation_data[1], y_pred))
+            y_test_pred = [np.argmax(x) for x in y_pred]
+            print(confusion_matrix(self.validation_data[1], y_test_pred))
         return
 
 def f1(y_true, y_pred):
@@ -148,15 +149,52 @@ def get_xception_model():
 
     return model
 
+def resize_image(image_location):
+    image = cv2.imread(image_location)
+
+    if image.shape[0] != IMAGE_SIZE[0] or image.shape[1] != IMAGE_SIZE[1]:
+        # print("Resizing the image: {0}".format(image_location))
+        resized_image = cv2.resize(image, IMAGE_SIZE, interpolation = cv2.INTER_AREA)
+    else:
+        resized_image = image
+
+    return resized_image
+
+def get_validation_data(data_path):
+    X, y = [], []
+    features_with_labels = []
+    type_locations = ["b", "n", "k", "p", "q", "r"]
+    type_name_to_label = { "p":0, "b":1, "n":2, "r":3, "q": 4, "k":5 }
+
+    for type_name in type_locations:
+            piece_type_folder = os.path.join(data_path, type_name)
+            for f in (os.listdir(piece_type_folder)):
+                if f.endswith(".jpg"):
+
+                    img_file_loc = os.path.join(piece_type_folder, f)
+                    resized_image = resize_image(img_file_loc)
+                    label = type_name_to_label[type_name]
+                    features_with_labels.append({"feature": resized_image, "label": label})
+
+    random.shuffle(features_with_labels)
+
+    X = [x["feature"] for x in features_with_labels]
+    y = [x["label"] for x in features_with_labels]
+
+    X = np.array(X)
+    X = X.astype('float32')
+    X /= 255
+
+    return X, np.array(y)
 
 
 xception_model = get_xception_model()
 
 
 filepath = os.path.join(model_folder_name, "xception.hdf5")
-checkpoint = ModelCheckpoint(filepath, monitor='val_f1', verbose=1, save_best_only=True, mode='max')
+checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 
-earlystop = EarlyStopping(monitor='val_f1', min_delta=0.0001, patience=50, verbose=1, mode='max')
+earlystop = EarlyStopping(monitor='val_acc', min_delta=0.0001, patience=50, verbose=1, mode='max')
 
 tensorboard = TensorBoard(log_dir=tensorboard_logs_folder_location, histogram_freq=0, write_graph=True, write_images=True)
 
@@ -165,14 +203,15 @@ print_confusion_matrix = PrintConfusionMatrix()
 callbacks_list = [checkpoint, earlystop, tensorboard, print_confusion_matrix]
 
 adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
-xception_model.compile(loss='sparse_categorical_crossentropy', optimizer=adam, metrics=['accuracy', f1])
+xception_model.compile(loss='sparse_categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
+
+X_val, y_val = get_validation_data('C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\\six_class_data\\v1\\test')
 
 xception_model.fit_generator(
         train_generator,
         steps_per_epoch=TOTAL_TRAIN_IMAGES // batch_size,
         epochs=epochs1,
-        validation_data=validation_generator,
-        validation_steps=TOTAL_TEST_IMAGES // batch_size,
+        validation_data=(X_val, y_val),
         callbacks=callbacks_list)
 
 # at this point, the top layers are well trained and we can start fine-tuning
@@ -194,13 +233,12 @@ for layer in xception_model.layers[106:]:
 # we need to recompile the model for these modifications to take effect
 # we use SGD with a low learning rate
 from keras.optimizers import SGD
-xception_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='sparse_categorical_crossentropy', metrics=['accuracy', f1])
+xception_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 # we train our model again (this time fine-tuning the top 2 inception blocks
 # alongside the top Dense layers
 xception_model.fit_generator(train_generator,
         steps_per_epoch=TOTAL_TRAIN_IMAGES // batch_size,
         epochs=epochs2,
-        validation_data=validation_generator,
-        validation_steps=TOTAL_TEST_IMAGES // batch_size,
+        validation_data=(X_val, y_val),
         callbacks=callbacks_list)
