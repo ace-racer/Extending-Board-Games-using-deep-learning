@@ -2,6 +2,13 @@ import cv2
 import matplotlib.pyplot as plt
 from sklearn.utils import shuffle
 import numpy as np
+
+from numpy.random import seed
+seed(1)
+
+from tensorflow import set_random_seed
+set_random_seed(2)
+
 import os
 import random
 from collections import Counter, defaultdict
@@ -10,8 +17,6 @@ import math
 import cv2
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score
-
-random.seed(100)
 
 import keras
 from keras.layers import Input, Conv2D, Lambda, average, Dense, Flatten,MaxPooling2D, BatchNormalization, Dropout, Activation, Subtract, subtract, GlobalAveragePooling2D
@@ -30,7 +35,14 @@ IMAGE_SIZE = (100, 100)
 TOTAL_TRAIN_IMAGES = 10000
 TOTAL_TEST_IMAGES = 300
 
+
+
+model_folder_name = "models"
+tensorboard_logs_folder_location = "logs"
+
 class PrintConfusionMatrix(keras.callbacks.Callback):
+    def __init__(self):
+        self.best_f1_score = -1
 
     def on_epoch_end(self, epoch, logs={}):
         if epoch % 5 == 0:
@@ -38,40 +50,15 @@ class PrintConfusionMatrix(keras.callbacks.Callback):
             y_pred = self.model.predict(self.validation_data[0])
             y_test_pred = [np.argmax(x) for x in y_pred]
             print(confusion_matrix(self.validation_data[1], y_test_pred))
-            print("F1 score: {0}".format(f1_score(self.validation_data[1], y_test_pred, average='weighted')))
+
+        current_f1_score = f1_score(self.validation_data[1], y_test_pred, average='weighted')
+        if current_f1_score > self.best_f1_score:
+            self.best_f1_score = current_f1_score
+            with open(os.path.join(model_folder_name, "f1.txt"), "a") as fp:
+                fp.write("Better F1 score {0} obtained during epoch {1} \n".format(current_f1_score, epoch))
+
+            self.model.save_weights(os.path.join(model_folder_name, "best_f1.hdf5"))
         return
-
-def f1(y_true, y_pred):
-    def recall(y_true, y_pred):
-        """Recall metric.
-
-        Only computes a batch-wise average of recall.
-
-        Computes the recall, a metric for multi-label classification of
-        how many relevant items are selected.
-        """
-        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-        possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
-        recall = true_positives / (possible_positives + K.epsilon())
-        return recall
-
-    def precision(y_true, y_pred):
-        """Precision metric.
-
-        Only computes a batch-wise average of precision.
-
-        Computes the precision, a metric for multi-label classification of
-        how many selected items are relevant.
-        """
-        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-        predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
-        precision = true_positives / (predicted_positives + K.epsilon())
-        return precision
-    precision = precision(y_true, y_pred)
-    recall = recall(y_true, y_pred)
-    #print("Precision {0} Recall {1}".format(precision, recall))
-    return 2*((precision*recall)/(precision+recall+K.epsilon()))
-
 
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 train_datagen = ImageDataGenerator(
@@ -113,9 +100,6 @@ epochs1 = 500
 epochs2 = 500
 
 required_input_shape = (*IMAGE_SIZE, 3)
-
-model_folder_name = "models"
-tensorboard_logs_folder_location = "logs"
 
 # checkpoint
 if not os.path.exists(model_folder_name):
