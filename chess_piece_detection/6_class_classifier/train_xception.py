@@ -22,11 +22,53 @@ from keras.losses import binary_crossentropy
 from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 import numpy.random as rng
 from keras.applications.xception import Xception
+from sklearn.metrics import confusion_matrix
 
 
 IMAGE_SIZE = (100, 100)
 TOTAL_TRAIN_IMAGES = 10000
 TOTAL_TEST_IMAGES = 300
+
+class PrintConfusionMatrix(keras.callbacks.Callback):
+
+    def on_epoch_end(self, epoch, logs={}):
+        if epoch % 5 == 0:
+            # get the predictions providing the X for the validation data
+            y_pred = self.model.predict(self.validation_data[0])
+            print(confusion_matrix(self.validation_data[1], y_pred))
+        return
+
+def f1(y_true, y_pred):
+    def recall(y_true, y_pred):
+        """Recall metric.
+
+        Only computes a batch-wise average of recall.
+
+        Computes the recall, a metric for multi-label classification of
+        how many relevant items are selected.
+        """
+        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+        possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
+        recall = true_positives / (possible_positives + K.epsilon())
+        return recall
+
+    def precision(y_true, y_pred):
+        """Precision metric.
+
+        Only computes a batch-wise average of precision.
+
+        Computes the precision, a metric for multi-label classification of
+        how many selected items are relevant.
+        """
+        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+        predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
+        precision = true_positives / (predicted_positives + K.epsilon())
+        return precision
+    precision = precision(y_true, y_pred)
+    recall = recall(y_true, y_pred)
+    #print("Precision {0} Recall {1}".format(precision, recall))
+    return 2*((precision*recall)/(precision+recall+K.epsilon()))
+
 
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 train_datagen = ImageDataGenerator(
@@ -112,16 +154,18 @@ xception_model = get_xception_model()
 
 
 filepath = os.path.join(model_folder_name, "xception.hdf5")
-checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+checkpoint = ModelCheckpoint(filepath, monitor='val_f1', verbose=1, save_best_only=True, mode='max')
 
-earlystop = EarlyStopping(monitor='val_acc', min_delta=0.0001, patience=50, verbose=1, mode='max')
+earlystop = EarlyStopping(monitor='val_f1', min_delta=0.0001, patience=50, verbose=1, mode='max')
 
 tensorboard = TensorBoard(log_dir=tensorboard_logs_folder_location, histogram_freq=0, write_graph=True, write_images=True)
 
-callbacks_list = [checkpoint, earlystop, tensorboard]
+print_confusion_matrix = PrintConfusionMatrix()
 
-adam = Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
-xception_model.compile(loss='sparse_categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
+callbacks_list = [checkpoint, earlystop, tensorboard, print_confusion_matrix]
+
+adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+xception_model.compile(loss='sparse_categorical_crossentropy', optimizer=adam, metrics=['accuracy', f1])
 
 xception_model.fit_generator(
         train_generator,
@@ -150,7 +194,7 @@ for layer in xception_model.layers[106:]:
 # we need to recompile the model for these modifications to take effect
 # we use SGD with a low learning rate
 from keras.optimizers import SGD
-xception_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+xception_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='sparse_categorical_crossentropy', metrics=['accuracy', f1])
 
 # we train our model again (this time fine-tuning the top 2 inception blocks
 # alongside the top Dense layers
