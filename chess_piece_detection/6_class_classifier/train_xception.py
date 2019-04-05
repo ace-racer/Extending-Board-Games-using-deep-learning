@@ -45,10 +45,11 @@ class PrintConfusionMatrix(keras.callbacks.Callback):
         self.best_f1_score = -1
 
     def on_epoch_end(self, epoch, logs={}):
+
+        # get the predictions providing the X for the validation data
+        y_pred = self.model.predict(self.validation_data[0])
+        y_test_pred = [np.argmax(x) for x in y_pred]
         if epoch % 5 == 0:
-            # get the predictions providing the X for the validation data
-            y_pred = self.model.predict(self.validation_data[0])
-            y_test_pred = [np.argmax(x) for x in y_pred]
             print(confusion_matrix(self.validation_data[1], y_test_pred))
 
         current_f1_score = f1_score(self.validation_data[1], y_test_pred, average='weighted')
