@@ -1,2 +1,4 @@
 logs/
 models/
+fine_tuned_logs/
+fine_tuned_models/

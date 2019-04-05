@@ -107,7 +107,7 @@ def get_xception_model(weights_location):
     for layer in model.layers[106:]:
         layer.trainable = True
 
-    xception_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
     return model
 
