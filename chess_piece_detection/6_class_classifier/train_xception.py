@@ -9,6 +9,7 @@ from itertools import product, combinations
 import math
 import cv2
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import f1_score
 
 random.seed(100)
 
@@ -37,6 +38,7 @@ class PrintConfusionMatrix(keras.callbacks.Callback):
             y_pred = self.model.predict(self.validation_data[0])
             y_test_pred = [np.argmax(x) for x in y_pred]
             print(confusion_matrix(self.validation_data[1], y_test_pred))
+            print("F1 score: {0}".format(f1_score(self.validation_data[1], y_test_pred, average='weighted')))
         return
 
 def f1(y_true, y_pred):
