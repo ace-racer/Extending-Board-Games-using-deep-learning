@@ -177,6 +177,4 @@ callbacks_list = [checkpoint, earlystop, tensorboard, print_confusion_matrix]
 # batch size
 batch_size = 32
 
-hist = xception_model.fit(X_train, y_train, shuffle=True, batch_size=batch_size,
-                 epochs=epochs, verbose=1,
-                 validation_data=(X_test, y_test), callbacks=callbacks_list)
+hist = xception_model.fit(X_train, y_train, shuffle=True, batch_size=batch_size,epochs=epochs, verbose=1, validation_data=(X_test, y_test), callbacks=callbacks_list)
