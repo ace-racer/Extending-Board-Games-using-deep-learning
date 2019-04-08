@@ -144,7 +144,7 @@ xception_model = get_xception_model()
 filepath = os.path.join(model_folder_name, "xception.hdf5")
 checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 
-earlystop = EarlyStopping(monitor='val_acc', min_delta=0.0001, patience=50, verbose=1, mode='max')
+earlystop = EarlyStopping(monitor='val_acc', min_delta=0.0001, patience=20, verbose=1, mode='max')
 
 tensorboard = TensorBoard(log_dir=tensorboard_logs_folder_location, histogram_freq=0, write_graph=True, write_images=True)
 
@@ -189,3 +189,5 @@ xception_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='sparse_cate
 hist2 = xception_model.fit(X_train, y_train, shuffle=True, batch_size=batch_size,
                  epochs=epochs2, verbose=1,
                  validation_data=(X_val, y_val), callbacks=callbacks_list)
+
+xception_model.save_weights(os.path.join(model_folder_name, "final_xception.hdf5"))
