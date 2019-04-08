@@ -32,7 +32,7 @@ from sklearn.metrics import confusion_matrix
 
 
 IMAGE_SIZE = (100, 100)
-TOTAL_TRAIN_IMAGES = 10000
+TOTAL_TRAIN_IMAGES = 15000
 
 
 
@@ -86,8 +86,6 @@ train_generator = train_datagen.flow_from_directory(
         target_size=IMAGE_SIZE,
         batch_size=batch_size,
         class_mode='sparse',
-        save_to_dir='generated',
-        save_format='jpeg',
         seed=42)
 
 
