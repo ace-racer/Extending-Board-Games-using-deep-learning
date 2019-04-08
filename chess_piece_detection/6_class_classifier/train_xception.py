@@ -32,7 +32,7 @@ from sklearn.metrics import confusion_matrix
 
 
 IMAGE_SIZE = (100, 100)
-TOTAL_TRAIN_IMAGES = 12500
+TOTAL_TRAIN_IMAGES = 10000
 
 
 
@@ -73,14 +73,22 @@ train_datagen = ImageDataGenerator(
 # batch size
 batch_size = 32
 
-# this is a generator that will read pictures found in
-# subfolers of 'data/train', and indefinitely generate
-# batches of augmented image data
+folders_to_create = [model_folder_name, tensorboard_logs_folder_location, "generated"]
+
+for folder_name in folders_to_create:
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+
+
+# generator to indefinitely generate the training images
 train_generator = train_datagen.flow_from_directory(
         'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\\six_class_data\\v2\\train',  # this is the target directory
         target_size=IMAGE_SIZE,
         batch_size=batch_size,
-        class_mode='sparse')
+        class_mode='sparse',
+        save_to_dir='generated',
+        save_format='jpeg',
+        seed=42)
 
 
 
@@ -89,14 +97,6 @@ epochs1 = 500
 epochs2 = 500
 
 required_input_shape = (*IMAGE_SIZE, 3)
-
-# checkpoint
-if not os.path.exists(model_folder_name):
-    os.makedirs(model_folder_name)
-
-# tensorboard logs
-if not os.path.exists(tensorboard_logs_folder_location):
-    os.makedirs(tensorboard_logs_folder_location)
 
 def get_xception_model():
     base_model = Xception(include_top=False, weights='imagenet', input_shape=required_input_shape)
