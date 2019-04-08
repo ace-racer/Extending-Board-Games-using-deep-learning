@@ -32,8 +32,7 @@ from sklearn.metrics import confusion_matrix
 
 
 IMAGE_SIZE = (100, 100)
-TOTAL_TRAIN_IMAGES = 10000
-TOTAL_TEST_IMAGES = 300
+TOTAL_TRAIN_IMAGES = 12500
 
 
 
@@ -71,11 +70,6 @@ train_datagen = ImageDataGenerator(
         zoom_range=0.2,
         fill_mode='nearest')
 
-# this is the augmentation configuration we will use for testing:
-# only rescaling
-test_datagen = ImageDataGenerator(rescale=1./255)
-
-
 # batch size
 batch_size = 32
 
@@ -83,17 +77,11 @@ batch_size = 32
 # subfolers of 'data/train', and indefinitely generate
 # batches of augmented image data
 train_generator = train_datagen.flow_from_directory(
-        'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\\six_class_data\\v1\\train',  # this is the target directory
+        'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\\six_class_data\\v2\\train',  # this is the target directory
         target_size=IMAGE_SIZE,
         batch_size=batch_size,
         class_mode='sparse')
 
-# this is a similar generator, for validation data
-validation_generator = test_datagen.flow_from_directory(
-        'C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\\six_class_data\\v1\\test',
-        target_size=IMAGE_SIZE,
-        batch_size=batch_size,
-        class_mode='sparse')
 
 
 # number of training epochs
@@ -192,7 +180,7 @@ callbacks_list = [checkpoint, earlystop, tensorboard, print_confusion_matrix]
 adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
 xception_model.compile(loss='sparse_categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
-X_val, y_val = get_validation_data('C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\\six_class_data\\v1\\test')
+X_val, y_val = get_validation_data('C:\\Users\\issuser\\Desktop\\ExtendingBoardGamesOnline\\data\\\six_class_data\\v2\\test')
 
 xception_model.fit_generator(
         train_generator,
