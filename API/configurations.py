@@ -27,4 +27,4 @@ REQUIRED_CHESS_BOARD_DIMENSION = (835, 817)
 CHESS_BLOCK_IMAGE_SIZE = (70, 70)
 
 # name of the 6 class classifier model to use
-SIX_CLASS_MODEL_TO_USE = "color_cnn"
+SIX_CLASS_MODEL_TO_USE = "xception"

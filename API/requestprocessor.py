@@ -82,9 +82,9 @@ class RequestProcessor:
 
     def predict_piece_type(self, piece_image):
         images_for_recognition = np.array([piece_image])
-        processed_chess_piece_images, predictions_str = self._chess_pieces_recognizer.predict_color_empty_for_image(images_for_recognition)
+        predictions_str = self._chess_pieces_recognizer.predict_color_empty_for_image(images_for_recognition)
         positions = list(range(images_for_recognition.shape[0]))
-        return self._chess_pieces_recognizer.predict_pieces_given_colors(processed_chess_piece_images, predictions_str, positions)
+        return self._chess_pieces_recognizer.predict_pieces_given_colors(images_for_recognition, predictions_str, positions)
 
     def segment_chess_board(self, chess_board_image):
         print(chess_board_image.shape)
