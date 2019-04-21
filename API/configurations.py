@@ -17,7 +17,7 @@ IMAGES_LOCATION = "outputs/"
 # Application Flags
 APP_FLAGS = {
     "SEND_DELTA_ONLY" : False,
-    "USE_MONGO": True,
+    "USE_MONGO": False,
     "USE_REDIS": False
 }
 

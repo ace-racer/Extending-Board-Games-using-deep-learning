@@ -1,4 +1,3 @@
-from redisprovider import RedisProvider
 from mongodbprovider import MongoDBProvider
 from chess_board_segmentation import ChessBoardSegmentation
 from chess_piece_recognition import ChessPieceRecognition
@@ -14,7 +13,6 @@ import os
 class RequestProcessor:
     def __init__(self, mongo_db_provider = None):
         self._mongo_db_provider = mongo_db_provider
-        self._redis_provider = RedisProvider()
         self._chess_pieces_recognizer = ChessPieceRecognition(mongo_db_provider)
         self._chess_board_segmenter = ChessBoardSegmentation(mongo_db_provider)
         self._rules_checker = RulesChecker()

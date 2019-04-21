@@ -27,13 +27,10 @@ class RedisProvider:
 
     def get_value_in_redis(self, key):
         if key:
-            if self._use_redis_db:
-                retrieved_value = self.db.get(key)
-                if retrieved_value:
-                    return json.loads(retrieved_value)
-                return None
-            else:
-                return json.loads(self.db.get(key))
+            retrieved_value = self.db.get(key)
+            if retrieved_value:
+                return json.loads(retrieved_value)
+            return None
         print("No key specified...")
         return None
 
