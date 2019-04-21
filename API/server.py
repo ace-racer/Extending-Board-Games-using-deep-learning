@@ -9,7 +9,6 @@ from flask import request
 
 import constants, configurations, utils
 from requestprocessor import RequestProcessor
-from redisprovider import RedisProvider
 from mongodbprovider import MongoDBProvider
 
 # initialize our Flask application and the Keras model
@@ -160,7 +159,6 @@ def get_logs():
 # if this is the main thread of execution first load the model and
 # then start the server
 if __name__ == "__main__":
-    redis_provider = RedisProvider()
     mongo_provider = MongoDBProvider()
     request_processor = RequestProcessor(mongo_provider)
     app.run(debug=True, use_reloader=False)
