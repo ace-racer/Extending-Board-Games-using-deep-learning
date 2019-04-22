@@ -9,5 +9,4 @@ scipy==1.0.0
 Flask_Cors==3.0.3
 Keras==2.2.4
 Pillow==6.0.0
-skimage==0.0
 scikit_learn==0.20.3

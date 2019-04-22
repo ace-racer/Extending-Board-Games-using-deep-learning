@@ -1,0 +1,2 @@
+1. sudo docker build -t chess_detect_server . 
+2. sudo docker run  -p 127.0.0.1:5000:5000 chess_detect_server

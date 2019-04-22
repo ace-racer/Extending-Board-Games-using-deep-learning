@@ -163,4 +163,4 @@ if __name__ == "__main__":
     redis_provider = RedisProvider()
     mongo_provider = MongoDBProvider()
     request_processor = RequestProcessor(mongo_provider)
-    app.run(debug=True, use_reloader=False)
+    app.run(debug=True, use_reloader=False, host='0.0.0.0')
